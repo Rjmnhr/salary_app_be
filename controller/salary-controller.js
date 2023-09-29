@@ -2,6 +2,7 @@ const SalaryModel = require("../models/salary-model");
 
 const SalaryController = {
   getAll: async (req, res) => {
+    console.log("entered");
     try {
       const data = await SalaryModel.getAll(req.body);
 
