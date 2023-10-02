@@ -5,7 +5,7 @@ const SalaryModel = {
     const connection = await pool.getConnection();
 
     try {
-      const query = `SELECT * FROM naukri_extract`;
+      const query = `SELECT * FROM naukri_extract LIMIT 100`;
 
       const [rows] = await connection.query(query);
 
