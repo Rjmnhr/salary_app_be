@@ -1,11 +1,11 @@
 const pool = require("../mySQL-DB");
 
 const SalaryModel = {
-  getAll: async () => {
+  getAll: async (getAll) => {
     const connection = await pool.getConnection();
 
     try {
-      const query = `SELECT mapped_job_title, salary, skill1, skill2, skill3, skill4 ,skill5, skill6, skill7, skill8, mapped_average_sal, "avg experience", comp_industry  FROM naukri_extract `;
+      const query = `SELECT mapped_job_title, salary,  mapped_average_sal, avg_experience  FROM naukri_extract where mapped_job_title= '${getAll.job_title}' AND location LIKE '%${getAll.location}%' `;
 
       const [rows] = await connection.query(query);
 
