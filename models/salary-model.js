@@ -11,7 +11,14 @@ const SalaryModel = {
       const conditions = userInputSkills
         .map((skill) => `FIND_IN_SET('${skill}', combined_skills) > 0`)
         .join(" OR ");
-      const query = `SELECT mapped_job_title, mapped_job_title_1, current_date, salary,  mapped_average_sal, avg_experience  FROM naukri_extract WHERE (${conditions}) AND mapped_job_title= '${getAll.job_title}' AND location LIKE '%${getAll.location}%' `;
+
+      const query = `SELECT mapped_job_title, mapped_job_title_1, current_date, salary,  mapped_average_sal, avg_experience
+        FROM naukri_extract
+        WHERE (${conditions}) AND mapped_job_title= '${getAll.job_title}' AND location LIKE '%${getAll.location}%' AND
+        CAST(SUBSTRING_INDEX(experience, '-', 1) AS UNSIGNED) <= ${getAll.experience}
+        AND
+         CAST(SUBSTRING_INDEX(experience, '-', -1) AS UNSIGNED) >= ${getAll.experience}
+         AND mapped_average_sal > 2 `;
 
       const [rows] = await connection.query(query);
 
@@ -20,7 +27,11 @@ const SalaryModel = {
       if (rowsCheck.length > 0) {
         return rows;
       } else {
-        const query = `SELECT mapped_job_title,mapped_job_title_1, current_date, salary,  mapped_average_sal, avg_experience  FROM naukri_extract WHERE mapped_job_title= '${getAll.job_title}' AND location LIKE '%${getAll.location}%' `;
+        const query = `SELECT mapped_job_title,mapped_job_title_1, current_date, salary,  mapped_average_sal, avg_experience  FROM naukri_extract WHERE mapped_job_title= '${getAll.job_title}' AND location LIKE '%${getAll.location}%'
+        AND
+        CAST(SUBSTRING_INDEX(experience, '-', 1) AS UNSIGNED) <= ${getAll.experience}
+        AND
+        CAST(SUBSTRING_INDEX(experience, '-', -1) AS UNSIGNED) >= ${getAll.experience} AND mapped_average_sal > 2 `;
         const [rows] = await connection.query(query);
 
         return rows;
