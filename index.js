@@ -4,6 +4,7 @@ const Cors = require("cors");
 const bodyParser = require("body-parser");
 const pool = require("./mySQL-DB");
 const salaryRoutes = require("./routes/salary-route");
+const skillsRoutes = require("./routes/skills-route");
 
 //App config
 const app = express();
@@ -29,5 +30,6 @@ pool
   });
 
 app.use("/api/salary", salaryRoutes);
+app.use("/api/skills", skillsRoutes);
 
 app.listen(port, () => console.log(`server is up on ${port}`));
