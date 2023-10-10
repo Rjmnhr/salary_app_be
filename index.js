@@ -5,6 +5,9 @@ const bodyParser = require("body-parser");
 const pool = require("./mySQL-DB");
 const salaryRoutes = require("./routes/salary-route");
 const skillsRoutes = require("./routes/skills-route");
+const otpAuth = require("./routes/otp-auth");
+const userRoutes = require("./routes/users-route");
+const tokenRoutes = require("./routes/verify-token");
 
 //App config
 const app = express();
@@ -31,5 +34,8 @@ pool
 
 app.use("/api/salary", salaryRoutes);
 app.use("/api/skills", skillsRoutes);
+app.use("/api/otp", otpAuth);
+app.use("/api/user", userRoutes);
+app.use("/api/token", tokenRoutes);
 
 app.listen(port, () => console.log(`server is up on ${port}`));
