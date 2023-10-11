@@ -33,7 +33,14 @@ const SalaryModel = {
     const connection = await pool.getConnection();
 
     try {
-      const query = `SELECT * FROM reports_data WHERE user_id = ${getReportByID.user_id}`;
+      const query = `SELECT  
+      job_titles,
+      location,
+      experience,
+      skills,
+      manage,
+      supervise
+      FROM reports_data WHERE user_id = ${getReportByID.user_id}`;
 
       const [rows] = await connection.query(query);
 
