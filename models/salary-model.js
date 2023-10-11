@@ -21,10 +21,9 @@ const SalaryModel = {
          AND mapped_average_sal > 2 `;
 
       const [rows] = await connection.query(query);
-
       const rowsCheck = rows;
 
-      if (rowsCheck.length > 0) {
+      if (rowsCheck.length > 1) {
         return rows;
       } else {
         const query = `SELECT mapped_job_title,mapped_job_title_1, current_date, salary,  mapped_average_sal, avg_experience  FROM naukri_extract WHERE mapped_job_title= '${getAll.job_title}' AND location LIKE '%${getAll.location}%'

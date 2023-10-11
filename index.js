@@ -8,6 +8,7 @@ const skillsRoutes = require("./routes/skills-route");
 const otpAuth = require("./routes/otp-auth");
 const userRoutes = require("./routes/users-route");
 const tokenRoutes = require("./routes/verify-token");
+const reportRoutes = require("./routes/reports-route");
 
 //App config
 const app = express();
@@ -37,5 +38,6 @@ app.use("/api/skills", skillsRoutes);
 app.use("/api/otp", otpAuth);
 app.use("/api/user", userRoutes);
 app.use("/api/token", tokenRoutes);
+app.use("/api/report", reportRoutes);
 
 app.listen(port, () => console.log(`server is up on ${port}`));
