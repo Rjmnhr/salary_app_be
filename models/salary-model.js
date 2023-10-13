@@ -5,36 +5,50 @@ const SalaryModel = {
     const connection = await pool.getConnection();
 
     try {
-      // User input array of skills
       const userInputSkills = getAll.skills;
+      let conditions = "";
+      if (userInputSkills && userInputSkills.length > 0) {
+        conditions = userInputSkills
+          .map((skill) => `FIND_IN_SET('${skill}', combined_skills) > 0`)
+          .join(" OR ");
+        conditions = `(${conditions}) AND`;
+      }
 
-      const conditions = userInputSkills
-        .map((skill) => `FIND_IN_SET('${skill}', combined_skills) > 0`)
-        .join(" OR ");
+      let experienceQuery = "";
+      if (getAll.experience) {
+        experienceQuery = `AND
+          CAST(SUBSTRING_INDEX(experience, '-', 1) AS UNSIGNED) <= ${getAll.experience}
+          AND
+          CAST(SUBSTRING_INDEX(experience, '-', -1) AS UNSIGNED) >= ${getAll.experience} `;
+      }
 
-      const query = `SELECT mapped_job_title, mapped_job_title_1, current_date, salary,  mapped_average_sal, avg_experience
+      const query = `SELECT mapped_job_title, mapped_job_title_1, current_date, salary, mapped_average_sal, avg_experience, combined_skills
         FROM naukri_extract
-        WHERE (${conditions}) AND mapped_job_title= '${getAll.job_title}' AND location LIKE '%${getAll.location}%' AND
-        CAST(SUBSTRING_INDEX(experience, '-', 1) AS UNSIGNED) <= ${getAll.experience}
-        AND
-         CAST(SUBSTRING_INDEX(experience, '-', -1) AS UNSIGNED) >= ${getAll.experience}
-         AND mapped_average_sal > 2 `;
+        WHERE ${conditions} mapped_job_title = '${getAll.job_title}' AND location LIKE '%${getAll.location}%'
+        ${experienceQuery} AND mapped_average_sal > 2`;
 
       const [rows] = await connection.query(query);
-      const rowsCheck = rows;
 
-      if (rowsCheck.length > 1) {
-        return rows;
-      } else {
-        const query = `SELECT mapped_job_title,mapped_job_title_1, current_date, salary,  mapped_average_sal, avg_experience  FROM naukri_extract WHERE mapped_job_title= '${getAll.job_title}' AND location LIKE '%${getAll.location}%'
-        AND
-        CAST(SUBSTRING_INDEX(experience, '-', 1) AS UNSIGNED) <= ${getAll.experience}
-        AND
-        CAST(SUBSTRING_INDEX(experience, '-', -1) AS UNSIGNED) >= ${getAll.experience} AND mapped_average_sal > 2 `;
-        const [rows] = await connection.query(query);
+      return rows;
+    } catch (err) {
+      // Handle errors here
+      console.error(err);
+      throw err;
+    } finally {
+      connection.release(); // Release the connection back to the pool
+    }
+  },
+  getByRole: async (getByRole) => {
+    const connection = await pool.getConnection();
 
-        return rows;
-      }
+    try {
+      const query = `SELECT mapped_job_title, mapped_job_title_1, current_date, salary, mapped_average_sal, avg_experience, combined_skills
+        FROM naukri_extract
+        WHERE  mapped_job_title = '${getByRole.job_title}'   AND mapped_average_sal >= 2`;
+
+      const [rows] = await connection.query(query);
+
+      return rows;
     } catch (err) {
       // Handle errors here
       console.error(err);

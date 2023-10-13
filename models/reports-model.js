@@ -11,7 +11,7 @@ const SalaryModel = {
       const [rows] = await connection.query(query, [
         saveReports.user_id,
         saveReports.job_titles,
-        saveReports.experience,
+        saveReports.experience ? saveReports.experience : null,
 
         saveReports.skills,
         saveReports.location,
