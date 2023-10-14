@@ -29,7 +29,19 @@ const SalaryModel = {
 
       const [rows] = await connection.query(query);
 
-      return rows;
+      const rowsCheck = rows;
+
+      if (rowsCheck.length > 1) {
+        return rows;
+      } else {
+        const query = `SELECT mapped_job_title, mapped_job_title_1, current_date, salary, mapped_average_sal, avg_experience, combined_skills
+        FROM naukri_extract
+        WHERE  mapped_job_title = '${getAll.job_title}' AND location LIKE '%${getAll.location}%'
+        ${experienceQuery} AND mapped_average_sal > 2 `;
+        const [rows] = await connection.query(query);
+
+        return rows;
+      }
     } catch (err) {
       // Handle errors here
       console.error(err);
