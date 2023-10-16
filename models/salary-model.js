@@ -1,4 +1,7 @@
 const pool = require("../mySQL-DB");
+const NodeCache = require("node-cache");
+
+const skillsCache = new NodeCache();
 
 const SalaryModel = {
   getAll: async (getAll) => {
@@ -22,7 +25,7 @@ const SalaryModel = {
           CAST(SUBSTRING_INDEX(experience, '-', -1) AS UNSIGNED) >= ${getAll.experience} `;
       }
 
-      const query = `SELECT mapped_job_title, mapped_job_title_1, current_date, salary, mapped_average_sal, avg_experience, combined_skills
+      const query = `SELECT experience, mapped_job_title, mapped_job_title_1, current_date, salary, mapped_average_sal, avg_experience, combined_skills
         FROM naukri_extract
         WHERE ${conditions} mapped_job_title = '${getAll.job_title}' AND location LIKE '%${getAll.location}%'
         ${experienceQuery} AND mapped_average_sal > 2`;
@@ -32,9 +35,12 @@ const SalaryModel = {
       const rowsCheck = rows;
 
       if (rowsCheck.length > 1) {
+        skillsCache.set("key", true);
         return rows;
       } else {
-        const query = `SELECT mapped_job_title, mapped_job_title_1, current_date, salary, mapped_average_sal, avg_experience, combined_skills
+        skillsCache.set("key", false);
+
+        const query = `SELECT experience, mapped_job_title, mapped_job_title_1, current_date, salary, mapped_average_sal, avg_experience, combined_skills
         FROM naukri_extract
         WHERE  mapped_job_title = '${getAll.job_title}' AND location LIKE '%${getAll.location}%'
         ${experienceQuery} AND mapped_average_sal > 2 `;
@@ -54,13 +60,34 @@ const SalaryModel = {
     const connection = await pool.getConnection();
 
     try {
-      const query = `SELECT mapped_job_title, mapped_job_title_1, current_date, salary, mapped_average_sal, avg_experience, combined_skills
+      const storeSkillCache = skillsCache.get("key");
+      const userInputSkills = getByRole.skills;
+      let conditions = "";
+      if (userInputSkills && userInputSkills.length > 0 && storeSkillCache) {
+        conditions = userInputSkills
+          .map((skill) => `FIND_IN_SET('${skill}', combined_skills) > 0`)
+          .join(" OR ");
+        conditions = `(${conditions}) AND`;
+      }
+
+      const query = `SELECT experience, mapped_job_title, mapped_job_title_1, current_date, salary, mapped_average_sal, avg_experience, combined_skills
         FROM naukri_extract
-        WHERE  mapped_job_title = '${getByRole.job_title}'   AND mapped_average_sal >= 2`;
+        WHERE  ${conditions} mapped_job_title = '${getByRole.job_title}'  AND mapped_average_sal >= 2`;
 
       const [rows] = await connection.query(query);
 
-      return rows;
+      const rowsCheck = rows;
+
+      if (rowsCheck.length > 1) {
+        return rows;
+      } else {
+        const query = `SELECT experience, mapped_job_title, mapped_job_title_1, current_date, salary, mapped_average_sal, avg_experience, combined_skills
+        FROM naukri_extract
+        WHERE mapped_job_title = '${getByRole.job_title}' AND mapped_average_sal >= 2`;
+        const [rows] = await connection.query(query);
+
+        return rows;
+      }
     } catch (err) {
       // Handle errors here
       console.error(err);
