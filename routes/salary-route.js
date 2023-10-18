@@ -4,4 +4,5 @@ const router = express.Router();
 
 router.post("/data", SalaryController.getAll);
 router.post("/data/role", SalaryController.getByRole);
+router.post("/data/role/no-experience", SalaryController.getByRoleNoExperience);
 module.exports = router;
