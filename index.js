@@ -9,6 +9,7 @@ const otpAuth = require("./routes/otp-auth");
 const userRoutes = require("./routes/users-route");
 const tokenRoutes = require("./routes/verify-token");
 const reportRoutes = require("./routes/reports-route");
+const checkoutRoutes = require("./routes/checkout");
 
 //App config
 const app = express();
@@ -17,7 +18,18 @@ const port = process.env.PORT || 8003;
 //middleware
 dotenv.config();
 app.use(Cors());
-app.use(express.json());
+
+app.use(
+  express.json({
+    // We need the raw body to verify webhook signatures.
+    // Let's compute it only when hitting the Stripe webhook endpoint.
+    verify: function (req, res, buf) {
+      if (req.originalUrl.startsWith("/webhook")) {
+        req.rawBody = buf.toString();
+      }
+    },
+  })
+);
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -39,5 +51,6 @@ app.use("/api/otp", otpAuth);
 app.use("/api/user", userRoutes);
 app.use("/api/token", tokenRoutes);
 app.use("/api/report", reportRoutes);
+app.use(checkoutRoutes);
 
 app.listen(port, () => console.log(`server is up on ${port}`));
