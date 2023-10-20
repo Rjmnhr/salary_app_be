@@ -10,6 +10,7 @@ const userRoutes = require("./routes/users-route");
 const tokenRoutes = require("./routes/verify-token");
 const reportRoutes = require("./routes/reports-route");
 const checkoutRoutes = require("./routes/checkout");
+const paymentSuccessRoutes = require("./routes/payment_success");
 
 //App config
 const app = express();
@@ -52,5 +53,6 @@ app.use("/api/user", userRoutes);
 app.use("/api/token", tokenRoutes);
 app.use("/api/report", reportRoutes);
 app.use(checkoutRoutes);
+app.use(paymentSuccessRoutes);
 
 app.listen(port, () => console.log(`server is up on ${port}`));
