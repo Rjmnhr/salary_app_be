@@ -16,21 +16,19 @@ router.post("/send-otp", (req, res) => {
 
   // Create a Nodemailer transporter
   const transporter = nodemailer.createTransport({
-    host: "smtp-mail.outlook.com",
-    port: 587,
-    secure: false,
+    service: "Gmail", // Example: 'Gmail' or 'SMTP'
     auth: {
-      user: "info@2ndstorey.com",
-      pass: "secondstorey",
+      user: "team@equipaypartners.com",
+      pass: process.env.EQUIPAY_MAIL_APP_PASS,
     },
   });
 
   // Set up email data
   const mailOptions = {
-    from: "info@2ndstorey.com",
+    from: "team@equipaypartners.com",
     to: email,
-    subject: "Your One-Time Password (OTP) for 2nd Storey",
-    text: `Thank you for using 2nd Storey. To complete your login or verification process, please use the following one-time password (OTP):
+    subject: "Your One-Time Password (OTP) for Equipay Partners",
+    text: `Thank you for using Equipay Partners. To complete your login or verification process, please use the following one-time password (OTP):
     
 Your OTP: ${otp}
   
@@ -43,10 +41,10 @@ We will never ask you for your OTP through email, phone, or any other means. If 
 If you didn't request this OTP or believe it to be a mistake, please disregard this email.
 If you encounter any issues or have questions, please don't hesitate to contact our support team at info@2ndstorey.com .
 
-Thank you for choosing 2nd Storey.
+Thank you for choosing Equipay Partners.
 
 Best regards,
-The 2nd Storey Team
+The Equipay Partners Team
     
     `,
   };
