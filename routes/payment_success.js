@@ -58,7 +58,7 @@ router.post("/payment-success", async (req, res) => {
   // Generate a JWT to grant access to the PDF file
   const tokenPayload = {
     sessionId: req.body.sessionId, // Assuming you have a user ID
-    file: "CEO_pay_NSE100.pdf", // The PDF file you want to grant access to
+    file: req.body.product, // The PDF file you want to grant access to
     email: req.body.email,
   };
 
@@ -68,7 +68,7 @@ router.post("/payment-success", async (req, res) => {
   const accessToken = jwt.sign(tokenPayload, secretKey, { expiresIn: "1h" });
 
   // Redirect the user to a route that serves the PDF with the JWT
-  res.redirect(`/send-pdf?token=${accessToken}`);
+  return res.redirect(`/send-pdf?token=${accessToken}`);
 });
 
 router.get("/send-pdf", (req, res) => {

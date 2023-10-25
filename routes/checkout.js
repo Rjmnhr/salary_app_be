@@ -26,6 +26,23 @@ router.get("/checkout-session", async (req, res) => {
 
 router.post("/create-checkout-session", async (req, res) => {
   const domainURL = process.env.DOMAIN;
+  const price = req.body.price;
+
+  let product = "";
+  switch (price) {
+    case process.env.PRICE_100:
+      product = "CEO_pay_NSE100.pdf";
+      break;
+    case process.env.PRICE_250:
+      product = "CEO_pay_MALL_CAP_250.pdf";
+      break;
+    case process.env.PRICE_500:
+      product = "CEO_pay_TOP_500_FINAL.pdf";
+      break;
+
+    default:
+      product = "not applicable";
+  }
 
   // Create new Checkout Session for the order
   // Other optional params include:
@@ -35,17 +52,22 @@ router.post("/create-checkout-session", async (req, res) => {
 
     line_items: [
       {
-        price: process.env.PRICE,
+        price: price,
         quantity: 1,
       },
     ],
     // ?session_id={CHECKOUT_SESSION_ID} means the redirect will have the session ID set as a query param
     success_url: `${domainURL}/success.html?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${domainURL}/canceled.html`,
+    metadata: {
+      report_product: product,
+      // Add additional key-value pairs as needed
+    },
+
     // automatic_tax: { enabled: true }
   });
 
-  return res.redirect(303, session.url);
+  return res.status(200).json({ url: session.url });
 });
 
 // Webhook handler for asynchronous events.
