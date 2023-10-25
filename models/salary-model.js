@@ -93,7 +93,7 @@ const SalaryModel = {
 
       const query = `SELECT experience, mapped_job_title, mapped_job_title_1, current_date, salary, mapped_average_sal, avg_experience, combined_skills
         FROM naukri_extract
-        WHERE  ${conditions} mapped_job_title = '${getByRole.job_title}'  ${experienceQuery}  AND mapped_average_sal >= 2`;
+        WHERE  ${conditions} mapped_job_title = '${getByRole.job_title}'  ${experienceQuery}  AND mapped_average_sal >= 2 LIMIT 500`;
 
       const [rows] = await connection.query(query);
 
@@ -104,7 +104,7 @@ const SalaryModel = {
       } else {
         const query = `SELECT experience, mapped_job_title, mapped_job_title_1, current_date, salary, mapped_average_sal, avg_experience, combined_skills
         FROM naukri_extract
-        WHERE mapped_job_title = '${getByRole.job_title}'  ${experienceQuery} AND mapped_average_sal >= 2`;
+        WHERE mapped_job_title = '${getByRole.job_title}'  ${experienceQuery} AND mapped_average_sal >= 2 LIMIT 500`;
         const [rows] = await connection.query(query);
 
         return rows;
