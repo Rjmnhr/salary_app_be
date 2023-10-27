@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const router = require("express").Router();
 
 function verify(req, res, next) {
+  console.log("enterd");
   const authHeader = req.headers.token;
 
   if (authHeader) {

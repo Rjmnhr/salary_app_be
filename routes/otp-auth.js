@@ -39,7 +39,7 @@ Security Reminder:
 Keep this OTP confidential, and do not share it with anyone, including our support team.
 We will never ask you for your OTP through email, phone, or any other means. If you receive such a request, please report it to us immediately.
 If you didn't request this OTP or believe it to be a mistake, please disregard this email.
-If you encounter any issues or have questions, please don't hesitate to contact our support team at info@2ndstorey.com .
+If you encounter any issues or have questions, please don't hesitate to contact our support team at team@equipaypartners.com .
 
 Thank you for choosing Equipay Partners.
 

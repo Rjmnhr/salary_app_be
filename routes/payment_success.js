@@ -55,11 +55,16 @@ const router = express.Router();
 router.post("/payment-success", async (req, res) => {
   // Process the successful payment
 
+  const { sessionId, product, email } = req.body;
+
+  if (product === "none" || product === "")
+    return res.status(500).json("File Name Error");
+
   // Generate a JWT to grant access to the PDF file
   const tokenPayload = {
-    sessionId: req.body.sessionId, // Assuming you have a user ID
-    file: req.body.product, // The PDF file you want to grant access to
-    email: req.body.email,
+    sessionId: sessionId, // Assuming you have a user ID
+    file: product, // The PDF file you want to grant access to
+    email: email,
   };
 
   const secretKey = process.env.SECRET_KEY; // A secret key for signing the JWT

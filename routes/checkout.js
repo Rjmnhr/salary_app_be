@@ -28,6 +28,16 @@ router.post("/create-checkout-session", async (req, res) => {
   const domainURL = process.env.DOMAIN;
   const price = req.body.price;
 
+  let successRoute = "success.html";
+
+  if (
+    process.env.PRICE_BASIC === price ||
+    process.env.PRICE_STANDARD === price ||
+    process.env.PRICE_PREMIUM === price
+  ) {
+    successRoute = "success-registration";
+  }
+
   let product = "";
   switch (price) {
     case process.env.PRICE_100:
@@ -41,7 +51,7 @@ router.post("/create-checkout-session", async (req, res) => {
       break;
 
     default:
-      product = "not applicable";
+      product = "none";
   }
 
   // Create new Checkout Session for the order
@@ -57,10 +67,11 @@ router.post("/create-checkout-session", async (req, res) => {
       },
     ],
     // ?session_id={CHECKOUT_SESSION_ID} means the redirect will have the session ID set as a query param
-    success_url: `${domainURL}/success.html?session_id={CHECKOUT_SESSION_ID}`,
+    success_url: `${domainURL}/${successRoute}?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${domainURL}/canceled.html`,
     metadata: {
       report_product: product,
+      plan: req.body.plan,
       // Add additional key-value pairs as needed
     },
 

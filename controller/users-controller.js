@@ -12,21 +12,19 @@ const notifyByMail = (data) => {
 
   // Create a Nodemailer transporter
   const transporter = nodemailer.createTransport({
-    host: "smtp-mail.outlook.com",
-    port: 587,
-    secure: false,
+    service: "Gmail", // Example: 'Gmail' or 'SMTP'
     auth: {
-      user: "info@2ndstorey.com",
-      pass: "secondstorey",
+      user: "team@equipaypartners.com",
+      pass: process.env.EQUIPAY_MAIL_APP_PASS,
     },
   });
 
   // Set up email data
   const mailOptions = {
-    from: "info@2ndstorey.com",
+    from: "team@equipaypartners.com",
     to: "renjithcm.renju@gmail.com",
     subject: `New Customer Registration Notification`,
-    text: `Hello 2nd Storey,
+    text: `Hello Equipay Partners,
     
 We are pleased to inform you that a new customer has registered on our platform. Below are the details of the new customer:
     
@@ -40,7 +38,7 @@ Thank you for your attention, and let's work together to ensure our new customer
     
 Best regards,
 
-2nd Storey Team
+Equipay Partners Team
   `,
   };
 
@@ -56,10 +54,6 @@ Best regards,
 
 const UsersController = {
   createGoogleUser: async (req, res) => {
-    console.log(
-      "🚀 ~ file: users-controller.js:60 ~ createGoogleUser: ~ req:",
-      req.body
-    );
     try {
       const existingUser = (await Users.loginUser(req.body))[0];
 
@@ -93,6 +87,10 @@ const UsersController = {
   },
   createUser: async (req, res) => {
     try {
+      const existingUser = (await Users.loginUser(req.body))[0];
+
+      if (existingUser) return res.status(400).json("Duplication Entry");
+
       const CreateUser = await Users.createUser(req.body);
 
       if (!CreateUser) return res.status(200).json("creating user failed");
@@ -148,6 +146,21 @@ const UsersController = {
     } catch (err) {
       console.error(err);
       res.status(500).json({ message: err });
+    }
+  },
+  checkForExistingUser: async (req, res) => {
+    try {
+      const userData = (await Users.loginUser(req.body))[0];
+      console.log(
+        "🚀 ~ file: users-controller.js:154 ~ checkForExistingUser: ~ userData:",
+        userData
+      );
+
+      if (userData) return res.status(200).json(true);
+      return res.status(200).json(false);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json(err);
     }
   },
 };
