@@ -148,13 +148,18 @@ const UsersController = {
       res.status(500).json({ message: err });
     }
   },
+  UpgradePlan: async (req, res) => {
+    try {
+      const data = await Users.UpgradePlan(req.body);
+      res.status(200).json({ plan: req.body.plan });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: err });
+    }
+  },
   checkForExistingUser: async (req, res) => {
     try {
       const userData = (await Users.loginUser(req.body))[0];
-      console.log(
-        "🚀 ~ file: users-controller.js:154 ~ checkForExistingUser: ~ userData:",
-        userData
-      );
 
       if (userData) return res.status(200).json(true);
       return res.status(200).json(false);

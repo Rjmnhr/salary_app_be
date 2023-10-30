@@ -51,6 +51,7 @@ app.use("/api/skills", skillsRoutes);
 app.use("/api/otp", otpAuth);
 app.use("/api/user", userRoutes);
 app.use("/api/token", tokenRoutes);
+
 app.use("/api/report", reportRoutes);
 app.use(checkoutRoutes);
 app.use(paymentSuccessRoutes);

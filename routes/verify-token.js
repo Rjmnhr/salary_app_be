@@ -1,8 +1,8 @@
 const jwt = require("jsonwebtoken");
 const router = require("express").Router();
+const verifyPlanController = require("../controller/verify-plan-controller");
 
 function verify(req, res, next) {
-  console.log("enterd");
   const authHeader = req.headers.token;
 
   if (authHeader) {
@@ -25,5 +25,6 @@ router.get("/verify", verify, async (req, res) => {
     res.status(500).json(err);
   }
 });
+router.post("/plan", verify, verifyPlanController.verifyPlan);
 
 module.exports = router;

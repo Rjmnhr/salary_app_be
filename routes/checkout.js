@@ -12,11 +12,6 @@ const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY, {
   // },
 });
 
-router.get("/", (req, res) => {
-  const path = resolve(process.env.STATIC_DIR + "/index.html");
-  res.sendFile(path);
-});
-
 // Fetch the Checkout Session to display the JSON result on the success page
 router.get("/checkout-session", async (req, res) => {
   const { sessionId } = req.query;
@@ -26,7 +21,8 @@ router.get("/checkout-session", async (req, res) => {
 
 router.post("/create-checkout-session", async (req, res) => {
   const domainURL = process.env.DOMAIN;
-  const price = req.body.price;
+
+  const { price, action, id, plan } = req.body;
 
   let successRoute = "success.html";
 
@@ -71,14 +67,15 @@ router.post("/create-checkout-session", async (req, res) => {
     cancel_url: `${domainURL}/canceled.html`,
     metadata: {
       report_product: product,
-      plan: req.body.plan,
+      plan: plan,
+      action: action,
       // Add additional key-value pairs as needed
     },
 
     // automatic_tax: { enabled: true }
   });
 
-  return res.status(200).json({ url: session.url });
+  return res.status(200).json({ url: session.url, action: action });
 });
 
 // Webhook handler for asynchronous events.

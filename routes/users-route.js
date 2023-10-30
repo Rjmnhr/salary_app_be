@@ -6,6 +6,7 @@ router.post("/signup", UsersController.createUser);
 router.post("/login", UsersController.loginUser);
 router.post("/create-google-user", UsersController.createGoogleUser);
 router.post("/change-password", UsersController.changePassword);
+router.post("/upgrade", UsersController.UpgradePlan);
 router.post("/check", UsersController.checkForExistingUser);
 
 module.exports = router;

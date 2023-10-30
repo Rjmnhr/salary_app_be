@@ -92,6 +92,20 @@ const Users = {
       connection.release(); // Release the connection back to the pool
     }
   },
+  UpgradePlan: async (UpgradePlan) => {
+    const connection = await pool.getConnection();
+    try {
+      let query = `UPDATE users SET plan = "${UpgradePlan.plan}" WHERE id = "${UpgradePlan.id}"`;
+      const [rows] = await connection.query(query);
+      return rows;
+    } catch (err) {
+      // Handle errors here
+      console.error(err);
+      throw err;
+    } finally {
+      connection.release(); // Release the connection back to the pool
+    }
+  },
 };
 
 module.exports = Users;
