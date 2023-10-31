@@ -113,7 +113,7 @@ const UsersController = {
     try {
       const userData = (await Users.loginUser(req.body))[0];
 
-      if (!userData) return res.status(401).json("Wrong username or password");
+      if (!userData) return res.status(200).json(404);
 
       const bytes = CryptoJS.AES.decrypt(
         userData.password,
@@ -122,7 +122,7 @@ const UsersController = {
       const originalPassword = bytes.toString(CryptoJS.enc.Utf8);
 
       if (originalPassword !== req.body.password)
-        return res.status(401).json("Wrong username or password");
+        return res.status(200).json(404);
 
       const accessToken = generateAccessToken(userData.id);
       const { password, ...other } = userData;
@@ -139,7 +139,7 @@ const UsersController = {
       const existingUser = (await Users.loginUser({ email: email }))[0];
 
       const data = await Users.ChangePassword({
-        id: existingUser.ID,
+        id: existingUser.id,
         password: password,
       });
       res.status(200).json(data);
