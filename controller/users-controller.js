@@ -53,6 +53,18 @@ Equipay Partners Team
 };
 
 const UsersController = {
+  getAll: async (req, res) => {
+    try {
+      const userData = (await Users.getAll({ id: req.query.id }))[0];
+
+      if (!userData) return res.status(400).json("user details not found");
+
+      return res.status(200).json(userData);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json(err);
+    }
+  },
   createGoogleUser: async (req, res) => {
     try {
       const existingUser = (await Users.loginUser(req.body))[0];
