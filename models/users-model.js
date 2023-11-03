@@ -53,8 +53,8 @@ const Users = {
         process.env.SECRET_KEY
       ).toString();
       const query = `
-        INSERT INTO users (first_name, last_name, email, password,plan)
-        VALUES (?, ?, ?, ?,?)
+        INSERT INTO users (first_name, last_name, email, password,plan, job, company)
+        VALUES (?, ?, ?, ?,?, ?, ?)
       `;
 
       const [rows] = await connection.query(query, [
@@ -63,6 +63,9 @@ const Users = {
         createUser.email,
         password,
         createUser.plan,
+
+        createUser.job,
+        createUser.company,
       ]);
 
       return rows;
