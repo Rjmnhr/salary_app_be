@@ -11,7 +11,7 @@ const tokenRoutes = require("./routes/verify-token");
 const reportRoutes = require("./routes/reports-route");
 const checkoutRoutes = require("./routes/checkout");
 const paymentSuccessRoutes = require("./routes/payment_success");
-
+const enquiryRoutes = require("./routes/enquiry");
 //App config
 const app = express();
 const port = process.env.PORT || 8003;
@@ -51,7 +51,7 @@ app.use("/api/skills", skillsRoutes);
 app.use("/api/otp", otpAuth);
 app.use("/api/user", userRoutes);
 app.use("/api/token", tokenRoutes);
-
+app.use("/api/enquiry", enquiryRoutes);
 app.use("/api/report", reportRoutes);
 app.use(checkoutRoutes);
 app.use(paymentSuccessRoutes);

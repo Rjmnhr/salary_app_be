@@ -89,14 +89,28 @@ const Users = {
       connection.release(); // Release the connection back to the pool
     }
   },
-  ChangePassword: async (ChangePassword) => {
+  resetPassword: async (resetPassword) => {
     const connection = await pool.getConnection();
     try {
       const password = CryptoJS.AES.encrypt(
-        ChangePassword.password,
+        resetPassword.password,
         process.env.SECRET_KEY
       ).toString();
-      let query = `UPDATE users SET password = "${password}" WHERE id = "${ChangePassword.id}"`;
+      let query = `UPDATE users SET password = "${password}" WHERE id = "${resetPassword.id}"`;
+      const [rows] = await connection.query(query);
+      return rows;
+    } catch (err) {
+      // Handle errors here
+      console.error(err);
+      throw err;
+    } finally {
+      connection.release(); // Release the connection back to the pool
+    }
+  },
+  changeEmail: async (changeEmail) => {
+    const connection = await pool.getConnection();
+    try {
+      let query = `UPDATE users SET email ="${changeEmail.email}" WHERE id = "${changeEmail.id}"`;
       const [rows] = await connection.query(query);
       return rows;
     } catch (err) {

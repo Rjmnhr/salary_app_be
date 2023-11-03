@@ -144,17 +144,31 @@ const UsersController = {
       res.status(500).json(err);
     }
   },
-  changePassword: async (req, res) => {
+  resetPassword: async (req, res) => {
     try {
       const password = req.body.password;
       const email = req.body.email;
       const existingUser = (await Users.loginUser({ email: email }))[0];
 
-      const data = await Users.ChangePassword({
+      const data = await Users.resetPassword({
         id: existingUser.id,
         password: password,
       });
       res.status(200).json(data);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: err });
+    }
+  },
+  changeEmail: async (req, res) => {
+    try {
+      const { email, id } = req.body;
+      const existingUser = (await Users.loginUser({ email: email }))[0];
+
+      if (existingUser) return res.status(200).json(404);
+
+      const data = await Users.changeEmail(req.body);
+      res.status(200).json(200);
     } catch (err) {
       console.error(err);
       res.status(500).json({ message: err });
