@@ -4,4 +4,5 @@ const router = express.Router();
 
 router.get("/industries", BenchmarkController.getIndustries);
 router.post("/companies", BenchmarkController.getCompanies);
+router.post("/data", BenchmarkController.getData);
 module.exports = router;
