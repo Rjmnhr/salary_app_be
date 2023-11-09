@@ -3,10 +3,6 @@ const BenchmarkModel = require("../models/benchmark-model");
 const BenchmarkController = {
   getData: async (req, res) => {
     try {
-      console.log(
-        "🚀 ~ file: benchmark-controller.js:5 ~ getData: ~ req:",
-        req.body
-      );
       const data = await BenchmarkModel.getData(req.body);
 
       res.status(200).json(data);

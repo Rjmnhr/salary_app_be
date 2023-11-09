@@ -10,5 +10,6 @@ const captureIpAddress = (req, res, next) => {
 };
 
 router.post("/store3", captureIpAddress, TrackDataController.saveTrackedData3);
+router.post("/store2", captureIpAddress, TrackDataController.saveTrackedData2);
 
 module.exports = router;

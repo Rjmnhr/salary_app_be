@@ -5,15 +5,21 @@ const BenchmarkModel = {
     const connection = await pool.getConnection();
 
     try {
-      let listOfCompanies = getData.companies.join("','");
+      let listOfCompanies = getData.companies.split(",");
+      const placeholders = listOfCompanies.map(() => "?").join(",");
 
-      const query = `select salary, directors_sitting_fees from benchmark where designation_category = ${getData.role} AND company_name IN ('${listOfCompanies}')  `;
+      const query = `SELECT salary, directors_sitting_fees FROM benchmark WHERE designation_category = ? AND company_name IN (${placeholders})`;
 
-      console.log(
-        "🚀 ~ file: benchmark-model.js:12 ~ getData: ~ query:",
-        query
-      );
-      const [rows] = await connection.query(query);
+      // Combine query and parameters for logging
+      const loggableQuery = connection.format(query, [
+        getData.role,
+        ...listOfCompanies,
+      ]);
+
+      const [rows] = await connection.query(query, [
+        getData.role,
+        ...listOfCompanies,
+      ]);
       return rows;
     } catch (err) {
       // Handle errors here
@@ -42,18 +48,22 @@ const BenchmarkModel = {
   getCompanies: async (getCompanies) => {
     const connection = await pool.getConnection();
 
-    let listOfIndustries = getCompanies.industries.join("','");
+    let listOfIndustries = getCompanies.industries.split(",");
 
     try {
       const query = `SELECT company_name
       FROM benchmark
-      WHERE market_capitalisation_2022 BETWEEN ${getCompanies.minMarketCap} AND ${getCompanies.maxMarketCap}
+      WHERE  industry_group IN (?) AND  ((market_capitalisation_2022 BETWEEN ${getCompanies.minMarketCap} AND ${getCompanies.maxMarketCap})
          OR (total_assets_2022 BETWEEN ${getCompanies.minAssets} AND ${getCompanies.maxAssets})
          OR (sales_2022 BETWEEN  ${getCompanies.minSales} AND ${getCompanies.maxSales})
-         OR (PAT_2022 BETWEEN  ${getCompanies.minPAT} AND ${getCompanies.maxPAT})
-         AND industry_group IN ('${listOfIndustries}')`;
+         OR (PAT_2022 BETWEEN  ${getCompanies.minPAT} AND ${getCompanies.maxPAT}))
+        `;
+      console.log(
+        "🚀 ~ file: benchmark-model.js:59 ~ getCompanies: ~ query:",
+        query
+      );
 
-      const [rows] = await connection.query(query);
+      const [rows] = await connection.query(query, [listOfIndustries]);
       return rows;
     } catch (err) {
       // Handle errors here
