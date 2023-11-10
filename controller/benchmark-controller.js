@@ -23,9 +23,20 @@ const BenchmarkController = {
       res.status(500).json({ message: err });
     }
   },
-  getCompanies: async (req, res) => {
+  getCompaniesByHandSelect: async (req, res) => {
     try {
-      const data = await BenchmarkModel.getCompanies(req.body);
+      const data = await BenchmarkModel.getCompaniesByHandSelect(req.body);
+
+      res.status(200).json(data);
+    } catch (err) {
+      console.error(err);
+
+      res.status(500).json({ message: err });
+    }
+  },
+  getCompaniesByIndex: async (req, res) => {
+    try {
+      const data = await BenchmarkModel.getCompaniesByIndex(req.body);
 
       res.status(200).json(data);
     } catch (err) {

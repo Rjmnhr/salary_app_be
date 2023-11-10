@@ -45,22 +45,44 @@ const BenchmarkModel = {
       connection.release(); // Release the connection back to the pool
     }
   },
-  getCompanies: async (getCompanies) => {
+  getCompaniesByHandSelect: async (getCompaniesByHandSelect) => {
     const connection = await pool.getConnection();
 
-    let listOfIndustries = getCompanies.industries.split(",");
+    let listOfIndustries = getCompaniesByHandSelect.industries.split(",");
 
     try {
       const query = `SELECT company_name
       FROM benchmark
-      WHERE  industry_group IN (?) AND  ((market_capitalisation_2022 BETWEEN ${getCompanies.minMarketCap} AND ${getCompanies.maxMarketCap})
-         OR (total_assets_2022 BETWEEN ${getCompanies.minAssets} AND ${getCompanies.maxAssets})
-         OR (sales_2022 BETWEEN  ${getCompanies.minSales} AND ${getCompanies.maxSales})
-         OR (PAT_2022 BETWEEN  ${getCompanies.minPAT} AND ${getCompanies.maxPAT}))
+      WHERE  industry_group IN (?) AND  ((market_capitalisation_2022 BETWEEN ${getCompaniesByHandSelect.minMarketCap} AND ${getCompaniesByHandSelect.maxMarketCap})
+         OR (total_assets_2022 BETWEEN ${getCompaniesByHandSelect.minAssets} AND ${getCompaniesByHandSelect.maxAssets})
+         OR (sales_2022 BETWEEN  ${getCompaniesByHandSelect.minSales} AND ${getCompaniesByHandSelect.maxSales})
+         OR (PAT_2022 BETWEEN  ${getCompaniesByHandSelect.minPAT} AND ${getCompaniesByHandSelect.maxPAT}))
         `;
+
+      const [rows] = await connection.query(query, [listOfIndustries]);
+      return rows;
+    } catch (err) {
+      // Handle errors here
+      console.error(err);
+      throw err;
+    } finally {
+      connection.release(); // Release the connection back to the pool
+    }
+  },
+  getCompaniesByIndex: async (getCompaniesByIndex) => {
+    const connection = await pool.getConnection();
+
+    let listOfIndustries = getCompaniesByIndex.industries.split(",");
+
+    try {
+      const query = `SELECT company_name
+      FROM benchmark
+      WHERE  industry_group IN (?) AND ${getCompaniesByIndex.index} = 1;
+        `;
+      const loggableQuery = connection.format(query, [listOfIndustries]);
       console.log(
-        "🚀 ~ file: benchmark-model.js:59 ~ getCompanies: ~ query:",
-        query
+        "🚀 ~ file: benchmark-model.js:83 ~ getCompaniesByIndex: ~ loggableQuery:",
+        loggableQuery
       );
 
       const [rows] = await connection.query(query, [listOfIndustries]);
