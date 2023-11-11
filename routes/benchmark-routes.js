@@ -6,4 +6,9 @@ router.get("/industries", BenchmarkController.getIndustries);
 router.post("/companies-hand", BenchmarkController.getCompaniesByHandSelect);
 router.post("/companies-index", BenchmarkController.getCompaniesByIndex);
 router.post("/data", BenchmarkController.getData);
+router.post("/companies-count", BenchmarkController.getCompaniesCount);
+router.post(
+  "/companies-count-metrics",
+  BenchmarkController.getCompaniesCountByMetrics
+);
 module.exports = router;

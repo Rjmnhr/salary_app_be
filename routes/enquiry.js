@@ -3,6 +3,7 @@ const nodemailer = require("nodemailer");
 
 router.post("/send-enquiry", (req, res) => {
   const { name, subject, email, details } = req.body;
+  console.log("🚀 ~ file: enquiry.js:6 ~ router.post ~ req.body:", req.body);
 
   // Create a Nodemailer transporter
   const transporter = nodemailer.createTransport({
@@ -16,7 +17,7 @@ router.post("/send-enquiry", (req, res) => {
   // Set up email data
   const mailOptions = {
     from: "team@equipaypartners.com",
-    to: "partner@equipaypartners.com",
+    to: "ren",
     subject: `Equipay Partners enquiry from ${name}  `,
     text: `Dear Equipay Partners,
     

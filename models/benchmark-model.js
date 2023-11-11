@@ -45,19 +45,145 @@ const BenchmarkModel = {
       connection.release(); // Release the connection back to the pool
     }
   },
+  // getCompaniesByHandSelect: async (getCompaniesByHandSelect) => {
+  //   const connection = await pool.getConnection();
+  //   const industries = getCompaniesByHandSelect.industries;
+
+  //   let listOfIndustries = industries?.split(",");
+
+  //   let industryGroupFilter = "";
+
+  //   // Check if industries are provided
+  //   if (industries) {
+  //     industryGroupFilter = "industry_group IN (?) AND";
+  //   }
+  //   // Function to replace NaN, null, or undefined with zero
+  //   const replace = (value) => {
+  //     return isNaN(value) || value === null || value === undefined ? 0 : value;
+  //   };
+  //   try {
+  //     const query = `SELECT company_name
+  //     FROM benchmark
+  //     WHERE   ${industryGroupFilter}  ((market_capitalisation_2022 BETWEEN ${replace(
+  //       getCompaniesByHandSelect.minMarketCap
+  //     )} AND ${replace(getCompaniesByHandSelect.maxMarketCap)})
+  //        OR (total_assets_2022 BETWEEN ${replace(
+  //          getCompaniesByHandSelect.minAssets
+  //        )} AND ${replace(getCompaniesByHandSelect.maxAssets)})
+  //        OR (sales_2022 BETWEEN  ${replace(
+  //          getCompaniesByHandSelect.minSales
+  //        )} AND ${replace(getCompaniesByHandSelect.maxSales)})
+  //        OR (PAT_2022 BETWEEN  ${replace(
+  //          getCompaniesByHandSelect.minPAT
+  //        )} AND ${replace(getCompaniesByHandSelect.maxPAT)}))
+  //       `;
+  //     const loggableQuery = connection.format(query, [listOfIndustries]);
+  //     console.log(
+  //       "🚀 ~ file: benchmark-model.js:81 ~ getCompaniesByHandSelect: ~ loggableQuery:",
+  //       loggableQuery
+  //     );
+
+  //     const [rows] = await connection.query(query, [listOfIndustries]);
+  //     return rows;
+  //   } catch (err) {
+  //     // Handle errors here
+  //     console.error(err);
+  //     throw err;
+  //   } finally {
+  //     connection.release(); // Release the connection back to the pool
+  //   }
+  // },
   getCompaniesByHandSelect: async (getCompaniesByHandSelect) => {
     const connection = await pool.getConnection();
+    const industries = getCompaniesByHandSelect.industries;
 
-    let listOfIndustries = getCompaniesByHandSelect.industries.split(",");
+    let listOfIndustries = industries?.split(",");
+    let industryGroupFilter = "";
+
+    // Check if industries are provided
+    if (industries) {
+      industryGroupFilter = "industry_group IN (?) ";
+    }
+
+    // Function to replace NaN, null, or undefined with zero
+    const replace = (value) => {
+      return isNaN(value) || value === null || value === undefined ? 0 : value;
+    };
+
+    // Build conditions based on provided attributes
+    const conditions = [];
+
+    if (replace(getCompaniesByHandSelect.maxMarketCap) !== "0") {
+      conditions.push(
+        `(market_capitalisation_2022 BETWEEN ${replace(
+          getCompaniesByHandSelect.minMarketCap
+        )} AND ${replace(getCompaniesByHandSelect.maxMarketCap)})`
+      );
+    }
+
+    if (replace(getCompaniesByHandSelect.maxAssets) !== "0") {
+      conditions.push(
+        `(total_assets_2022 BETWEEN ${replace(
+          getCompaniesByHandSelect.minAssets
+        )} AND ${replace(getCompaniesByHandSelect.maxAssets)})`
+      );
+    }
+
+    if (replace(getCompaniesByHandSelect.maxSales) !== "0") {
+      conditions.push(
+        `(sales_2022 BETWEEN ${replace(
+          getCompaniesByHandSelect.minSales
+        )} AND ${replace(getCompaniesByHandSelect.maxSales)})`
+      );
+    }
+
+    if (replace(getCompaniesByHandSelect.maxPAT) !== "0") {
+      conditions.push(
+        `(PAT_2022 BETWEEN ${replace(
+          getCompaniesByHandSelect.minPAT
+        )} AND ${replace(getCompaniesByHandSelect.maxPAT)})`
+      );
+    }
+
+    try {
+      let query = `
+        SELECT company_name  
+        FROM benchmark
+        WHERE ${industryGroupFilter}`;
+
+      if (industries && conditions.length > 0) {
+        query += `AND `;
+      }
+
+      // Add conditions only if there are any
+      if (conditions.length > 0) {
+        query += `( ${conditions.join(" OR ")})`;
+      }
+
+      const loggableQuery = connection.format(query, [listOfIndustries]);
+      console.log("Query:", loggableQuery);
+
+      const [rows] = await connection.query(query, [listOfIndustries]);
+      return rows;
+    } catch (err) {
+      console.error(err);
+      throw err;
+    } finally {
+      connection.release();
+    }
+  },
+
+  getCompaniesByIndex: async (getCompaniesByIndex) => {
+    const connection = await pool.getConnection();
+
+    let listOfIndustries = getCompaniesByIndex.industries?.split(",");
 
     try {
       const query = `SELECT company_name
       FROM benchmark
-      WHERE  industry_group IN (?) AND  ((market_capitalisation_2022 BETWEEN ${getCompaniesByHandSelect.minMarketCap} AND ${getCompaniesByHandSelect.maxMarketCap})
-         OR (total_assets_2022 BETWEEN ${getCompaniesByHandSelect.minAssets} AND ${getCompaniesByHandSelect.maxAssets})
-         OR (sales_2022 BETWEEN  ${getCompaniesByHandSelect.minSales} AND ${getCompaniesByHandSelect.maxSales})
-         OR (PAT_2022 BETWEEN  ${getCompaniesByHandSelect.minPAT} AND ${getCompaniesByHandSelect.maxPAT}))
+      WHERE  industry_group IN (?) AND ${getCompaniesByIndex.index} = 1;
         `;
+      const loggableQuery = connection.format(query, [listOfIndustries]);
 
       const [rows] = await connection.query(query, [listOfIndustries]);
       return rows;
@@ -69,23 +195,92 @@ const BenchmarkModel = {
       connection.release(); // Release the connection back to the pool
     }
   },
-  getCompaniesByIndex: async (getCompaniesByIndex) => {
+  getCompaniesCount: async (getCompaniesCount) => {
     const connection = await pool.getConnection();
-
-    let listOfIndustries = getCompaniesByIndex.industries.split(",");
+    let listOfIndustries = getCompaniesCount.industries?.split(",");
 
     try {
-      const query = `SELECT company_name
-      FROM benchmark
-      WHERE  industry_group IN (?) AND ${getCompaniesByIndex.index} = 1;
+      const query = `SELECT
+
+    COUNT(DISTINCT company_name) AS distinct_company_count
+FROM
+    benchmark
+WHERE  industry_group IN (?)
+   
         `;
       const loggableQuery = connection.format(query, [listOfIndustries]);
       console.log(
-        "🚀 ~ file: benchmark-model.js:83 ~ getCompaniesByIndex: ~ loggableQuery:",
+        "🚀 ~ file: benchmark-model.js:129 ~ getCompaniesCount: ~ loggableQuery:",
         loggableQuery
       );
 
       const [rows] = await connection.query(query, [listOfIndustries]);
+      return rows;
+    } catch (err) {
+      // Handle errors here
+      console.error(err);
+      throw err;
+    } finally {
+      connection.release(); // Release the connection back to the pool
+    }
+  },
+  getCompaniesCountByMetrics: async (getCompaniesCountByMetrics) => {
+    const connection = await pool.getConnection();
+    // Function to replace NaN, null, or undefined with zero
+    const replace = (value) => {
+      return isNaN(value) || value === null || value === undefined ? 0 : value;
+    };
+
+    // Build conditions based on provided attributes
+    const conditions = [];
+
+    if (replace(getCompaniesCountByMetrics.maxMarketCap) !== "0") {
+      conditions.push(
+        `(market_capitalisation_2022 BETWEEN ${replace(
+          getCompaniesCountByMetrics.minMarketCap
+        )} AND ${replace(getCompaniesCountByMetrics.maxMarketCap)})`
+      );
+    }
+
+    if (replace(getCompaniesCountByMetrics.maxAssets) !== "0") {
+      conditions.push(
+        `(total_assets_2022 BETWEEN ${replace(
+          getCompaniesCountByMetrics.minAssets
+        )} AND ${replace(getCompaniesCountByMetrics.maxAssets)})`
+      );
+    }
+
+    if (replace(getCompaniesCountByMetrics.maxSales) !== "0") {
+      conditions.push(
+        `(sales_2022 BETWEEN ${replace(
+          getCompaniesCountByMetrics.minSales
+        )} AND ${replace(getCompaniesCountByMetrics.maxSales)})`
+      );
+    }
+
+    if (replace(getCompaniesCountByMetrics.maxPAT) !== "0") {
+      conditions.push(
+        `(PAT_2022 BETWEEN ${replace(
+          getCompaniesCountByMetrics.minPAT
+        )} AND ${replace(getCompaniesCountByMetrics.maxPAT)})`
+      );
+    }
+
+    try {
+      const query = `SELECT
+
+    COUNT(DISTINCT company_name) AS distinct_company_count
+FROM
+    benchmark
+WHERE ( ${conditions.join(" OR ")});
+   
+
+
+        `;
+
+      const loggableQuery = connection.format(query);
+
+      const [rows] = await connection.query(query);
       return rows;
     } catch (err) {
       // Handle errors here
