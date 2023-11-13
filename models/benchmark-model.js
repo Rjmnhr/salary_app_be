@@ -8,7 +8,7 @@ const BenchmarkModel = {
       let listOfCompanies = getData.companies.split(",");
       const placeholders = listOfCompanies.map(() => "?").join(",");
 
-      const query = `SELECT salary, directors_sitting_fees FROM benchmark WHERE designation_category = ? AND company_name IN (${placeholders})`;
+      const query = `SELECT salary, directors_sitting_fees, date, market_capitalisation_2022, total_assets_2022, sales_2022, PAT_2022 FROM benchmark WHERE designation_category = ? AND company_name IN (${placeholders})`;
 
       // Combine query and parameters for logging
       const loggableQuery = connection.format(query, [
@@ -29,11 +29,11 @@ const BenchmarkModel = {
       connection.release(); // Release the connection back to the pool
     }
   },
-  getIndustries: async (getIndustries) => {
+  getDistinctCompanies: async (getDistinctCompanies) => {
     const connection = await pool.getConnection();
 
     try {
-      const query = `select industry_group from benchmark`;
+      const query = `Select distinct company_name from benchmark`;
 
       const [rows] = await connection.query(query);
       return rows;
@@ -45,7 +45,41 @@ const BenchmarkModel = {
       connection.release(); // Release the connection back to the pool
     }
   },
-  // getCompaniesByHandSelect: async (getCompaniesByHandSelect) => {
+  getSectors: async (getSectors) => {
+    const connection = await pool.getConnection();
+
+    try {
+      const query = `Select distinct industry_g_nse from benchmark`;
+
+      const [rows] = await connection.query(query);
+      return rows;
+    } catch (err) {
+      // Handle errors here
+      console.error(err);
+      throw err;
+    } finally {
+      connection.release(); // Release the connection back to the pool
+    }
+  },
+  getIndustries: async (getIndustries) => {
+    const connection = await pool.getConnection();
+    let listOfSectors = getIndustries.sectors?.split(",");
+    try {
+      const query = `SELECT DISTINCT industry_group FROM benchmark WHERE industry_g_nse IN (?)`;
+      const loggableQuery = connection.format(query, [listOfSectors]);
+
+      const [rows] = await connection.query(query, [listOfSectors]);
+
+      return rows;
+    } catch (err) {
+      // Handle errors here
+      console.error(err);
+      throw err;
+    } finally {
+      connection.release(); // Release the connection back to the pool
+    }
+  },
+
   //   const connection = await pool.getConnection();
   //   const industries = getCompaniesByHandSelect.industries;
 
@@ -209,10 +243,6 @@ WHERE  industry_group IN (?)
    
         `;
       const loggableQuery = connection.format(query, [listOfIndustries]);
-      console.log(
-        "🚀 ~ file: benchmark-model.js:129 ~ getCompaniesCount: ~ loggableQuery:",
-        loggableQuery
-      );
 
       const [rows] = await connection.query(query, [listOfIndustries]);
       return rows;
