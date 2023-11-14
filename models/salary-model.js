@@ -8,7 +8,7 @@ const SalaryModel = {
     const connection = await pool.getConnection();
 
     try {
-      const query = `SELECT mapped_job_title FROM naukri_extract`;
+      const query = `SELECT distinct mapped_job_title FROM naukri_extract`;
 
       const [rows] = await connection.query(query);
 
