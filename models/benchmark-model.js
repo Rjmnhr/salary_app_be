@@ -185,7 +185,10 @@ const BenchmarkModel = {
     // Build conditions based on provided attributes
     const conditions = [];
 
-    if (replace(getCompaniesByHandSelect.maxMarketCap) !== "0") {
+    if (
+      replace(getCompaniesByHandSelect.maxMarketCap) !== "0" &&
+      replace(getCompaniesByHandSelect.maxMarketCap) !== 0
+    ) {
       conditions.push(
         `(market_capitalisation_2023 BETWEEN ${replace(
           getCompaniesByHandSelect.minMarketCap
@@ -193,7 +196,10 @@ const BenchmarkModel = {
       );
     }
 
-    if (replace(getCompaniesByHandSelect.maxAssets) !== "0") {
+    if (
+      replace(getCompaniesByHandSelect.maxAssets) !== "0" &&
+      replace(getCompaniesByHandSelect.maxAssets) !== 0
+    ) {
       conditions.push(
         `(total_assets_2023 BETWEEN ${replace(
           getCompaniesByHandSelect.minAssets
@@ -201,7 +207,10 @@ const BenchmarkModel = {
       );
     }
 
-    if (replace(getCompaniesByHandSelect.maxSales) !== "0") {
+    if (
+      replace(getCompaniesByHandSelect.maxSales) !== "0" &&
+      replace(getCompaniesByHandSelect.maxSales) !== 0
+    ) {
       conditions.push(
         `(sales_2023 BETWEEN ${replace(
           getCompaniesByHandSelect.minSales
@@ -209,7 +218,10 @@ const BenchmarkModel = {
       );
     }
 
-    if (replace(getCompaniesByHandSelect.maxPAT) !== "0") {
+    if (
+      replace(getCompaniesByHandSelect.maxPAT) !== "0" &&
+      replace(getCompaniesByHandSelect.maxPAT) !== 0
+    ) {
       conditions.push(
         `(PAT_2023 BETWEEN ${replace(
           getCompaniesByHandSelect.minPAT
@@ -243,9 +255,9 @@ const BenchmarkModel = {
       connection.release();
     }
   },
-  getCompaniesByHandSelectCount: async (getCompaniesByHandSelect) => {
+  getCompaniesByHandSelectCount: async (getCompaniesByHandSelectCount) => {
     const connection = await pool.getConnection();
-    const industries = getCompaniesByHandSelect.industries;
+    const industries = getCompaniesByHandSelectCount.industries;
 
     let listOfIndustries = industries?.split(",");
     let industryGroupFilter = "";
@@ -263,35 +275,47 @@ const BenchmarkModel = {
     // Build conditions based on provided attributes
     const conditions = [];
 
-    if (replace(getCompaniesByHandSelect.maxMarketCap) !== "0") {
+    if (
+      replace(getCompaniesByHandSelectCount.maxMarketCap) !== "0" &&
+      replace(getCompaniesByHandSelectCount.maxMarketCap) !== 0
+    ) {
       conditions.push(
         `(market_capitalisation_2023 BETWEEN ${replace(
-          getCompaniesByHandSelect.minMarketCap
-        )} AND ${replace(getCompaniesByHandSelect.maxMarketCap)})`
+          getCompaniesByHandSelectCount.minMarketCap
+        )} AND ${replace(getCompaniesByHandSelectCount.maxMarketCap)})`
       );
     }
 
-    if (replace(getCompaniesByHandSelect.maxAssets) !== "0") {
+    if (
+      replace(getCompaniesByHandSelectCount.maxAssets) !== "0" &&
+      replace(getCompaniesByHandSelectCount.maxAssets) !== 0
+    ) {
       conditions.push(
         `(total_assets_2023 BETWEEN ${replace(
-          getCompaniesByHandSelect.minAssets
-        )} AND ${replace(getCompaniesByHandSelect.maxAssets)})`
+          getCompaniesByHandSelectCount.minAssets
+        )} AND ${replace(getCompaniesByHandSelectCount.maxAssets)})`
       );
     }
 
-    if (replace(getCompaniesByHandSelect.maxSales) !== "0") {
+    if (
+      replace(getCompaniesByHandSelectCount.maxSales) !== "0" &&
+      replace(getCompaniesByHandSelectCount.maxSales) !== 0
+    ) {
       conditions.push(
         `(sales_2023 BETWEEN ${replace(
-          getCompaniesByHandSelect.minSales
-        )} AND ${replace(getCompaniesByHandSelect.maxSales)})`
+          getCompaniesByHandSelectCount.minSales
+        )} AND ${replace(getCompaniesByHandSelectCount.maxSales)})`
       );
     }
 
-    if (replace(getCompaniesByHandSelect.maxPAT) !== "0") {
+    if (
+      replace(getCompaniesByHandSelectCount.maxPAT) !== "0" &&
+      replace(getCompaniesByHandSelectCount.maxPAT) !== 0
+    ) {
       conditions.push(
         `(PAT_2023 BETWEEN ${replace(
-          getCompaniesByHandSelect.minPAT
-        )} AND ${replace(getCompaniesByHandSelect.maxPAT)})`
+          getCompaniesByHandSelectCount.minPAT
+        )} AND ${replace(getCompaniesByHandSelectCount.maxPAT)})`
       );
     }
 
@@ -459,7 +483,10 @@ WHERE  industry_group IN (?)
     // Build conditions based on provided attributes
     const conditions = [];
 
-    if (replace(getCompaniesCountByMetrics.maxMarketCap) !== "0") {
+    if (
+      replace(getCompaniesCountByMetrics.maxMarketCap) !== "0" &&
+      replace(getCompaniesCountByMetrics.maxMarketCap) !== 0
+    ) {
       conditions.push(
         `(market_capitalisation_2023 BETWEEN ${replace(
           getCompaniesCountByMetrics.minMarketCap
@@ -467,7 +494,10 @@ WHERE  industry_group IN (?)
       );
     }
 
-    if (replace(getCompaniesCountByMetrics.maxAssets) !== "0") {
+    if (
+      replace(getCompaniesCountByMetrics.maxAssets) !== "0" &&
+      replace(getCompaniesCountByMetrics.maxAssets) !== 0
+    ) {
       conditions.push(
         `(total_assets_2023 BETWEEN ${replace(
           getCompaniesCountByMetrics.minAssets
@@ -475,7 +505,10 @@ WHERE  industry_group IN (?)
       );
     }
 
-    if (replace(getCompaniesCountByMetrics.maxSales) !== "0") {
+    if (
+      replace(getCompaniesCountByMetrics.maxSales) !== "0" &&
+      replace(getCompaniesCountByMetrics.maxSales) !== 0
+    ) {
       conditions.push(
         `(sales_2023 BETWEEN ${replace(
           getCompaniesCountByMetrics.minSales
@@ -483,7 +516,10 @@ WHERE  industry_group IN (?)
       );
     }
 
-    if (replace(getCompaniesCountByMetrics.maxPAT) !== "0") {
+    if (
+      replace(getCompaniesCountByMetrics.maxPAT) !== "0" &&
+      replace(getCompaniesCountByMetrics.maxPAT) !== 0
+    ) {
       conditions.push(
         `(PAT_2023 BETWEEN ${replace(
           getCompaniesCountByMetrics.minPAT
