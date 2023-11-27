@@ -92,7 +92,53 @@ router.post("/create-checkout-session", async (req, res) => {
 });
 
 // Webhook handler for asynchronous events.
+// router.post("/webhook", async (req, res) => {
+//   let event;
+
+//   // Check if webhook signing is configured.
+//   if (process.env.STRIPE_WEBHOOK_SECRET) {
+//     // Retrieve the event by verifying the signature using the raw body and secret.
+//     let signature = req.headers["stripe-signature"];
+
+//     try {
+//       event = stripe.webhooks.constructEvent(
+//         req.rawBody,
+//         signature,
+//         process.env.STRIPE_WEBHOOK_SECRET
+//       );
+//     } catch (err) {
+//       console.log(`⚠️  Webhook signature verification failed.`);
+//       return res.sendStatus(400);
+//     }
+//   } else {
+//     // Webhook signing is recommended, but if the secret is not configured in `.env`,
+//     // retrieve the event data directly from the request body.
+//     event = req.body;
+//   }
+
+//   if (event.type === "checkout.session.completed") {
+//     console.log(`🔔  Payment received!`);
+
+//     // Note: If you need access to the line items, for instance to
+//     // automate fullfillment based on the the ID of the Price, you'll
+//     // need to refetch the Checkout Session here, and expand the line items:
+//     //
+//     const session = await stripe.checkout.sessions.retrieve(
+//       "we_1OH4gvDNZni9rE7FAqEMUENo",
+//       {
+//         expand: ["line_items"],
+//       }
+//     );
+
+//     const lineItems = session.line_items;
+//   }
+
+//   res.sendStatus(200);
+// });
+
+// Webhook handler for asynchronous events.
 router.post("/webhook", async (req, res) => {
+  console.log("🚀 ~ file: checkout.js:141 ~ router.post ~ req:", req.body);
   let event;
 
   // Check if webhook signing is configured.
@@ -119,18 +165,30 @@ router.post("/webhook", async (req, res) => {
   if (event.type === "checkout.session.completed") {
     console.log(`🔔  Payment received!`);
 
-    // Note: If you need access to the line items, for instance to
-    // automate fullfillment based on the the ID of the Price, you'll
-    // need to refetch the Checkout Session here, and expand the line items:
-    //
-    const session = await stripe.checkout.sessions.retrieve(
-      "cs_test_KdjLtDPfAjT1gq374DMZ3rHmZ9OoSlGRhyz8yTypH76KpN4JXkQpD2G0",
+    // Retrieve the Checkout Session ID from the event
+    const sessionID = event.data.object.id;
+
+    // Retrieve the Checkout Session to get invoice information
+    const session = await stripe.checkout.sessions.retrieve(sessionID, {
+      expand: ["payment_intent"],
+    });
+
+    // Retrieve the Payment Intent ID from the session
+    const paymentIntentID = session.payment_intent;
+
+    // Retrieve the Payment Intent to get the associated invoice ID
+    const paymentIntent = await stripe.paymentIntents.retrieve(
+      paymentIntentID,
       {
-        expand: ["line_items"],
+        expand: ["invoice"],
       }
     );
 
-    const lineItems = session.line_items;
+    // Now you can access the invoice details
+    const invoiceID = paymentIntent.invoice;
+    const invoice = await stripe.invoices.retrieve(invoiceID);
+
+    console.log("Invoice Details:", invoice);
   }
 
   res.sendStatus(200);
