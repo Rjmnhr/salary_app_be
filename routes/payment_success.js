@@ -50,10 +50,11 @@ Equipay Partners`,
   });
 };
 
-const notifyAdmin = (product, email, phone, company, title) => {
+const notifyAdmin = (product, email, phone, company, title, timing) => {
   const mailOptions = {
     from: "team@equipaypartners.com",
     to: "indradeep.mazumdar@gmail.com",
+    // to: "renjithcm.renju@gmail.com",
     subject: "User Training Registration",
     text: `Dear Admin,
 
@@ -67,6 +68,8 @@ Title:${title}
     
 Training Session Details:
 Training Name: ${product}
+Time: ${timing}
+
     
 Best regards,
 Team Equipay Partners`,
@@ -99,7 +102,12 @@ Date: December 3rd 2023
 Training Name: ${product}
 Time: ${timing}
 Platform: Google Meet
+
     
+We will send you a reminder 1 or 2 days before the training along with the meeting details
+
+You will receive your payment receipt shortly
+
 
     
 Best regards,
@@ -199,7 +207,7 @@ router.post("/payment-success-training", async (req, res) => {
     timing += "Long Term Incentive Timing: 3:30 PM to 5:30 PM (IST)";
   }
 
-  notifyAdmin(training, email, phone, company, title);
+  notifyAdmin(training, email, phone, company, title, timing);
   notifyUser(training, email, timing);
 });
 module.exports = router;
