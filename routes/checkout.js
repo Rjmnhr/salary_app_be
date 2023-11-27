@@ -32,6 +32,16 @@ router.post("/create-checkout-session", async (req, res) => {
     process.env.PRICE_PREMIUM === price
   ) {
     successRoute = "success-registration";
+  } else if (
+    process.env.PRICE_EXECUTIVE_COMPENSATION === price ||
+    process.env.PRICE_SHORT === price ||
+    process.env.PRICE_LONG === price ||
+    process.env.PRICE_EXECUTIVE_COMPENSATION_AND_SHORT === price ||
+    process.env.PRICE_EXECUTIVE_COMPENSATION_AND_LONG === price ||
+    process.env.PRICE_LONG_AND_SHORT === price ||
+    process.env.PRICE_EXECUTIVE_COMPENSATION_AND_SHORT_AND_LONG === price
+  ) {
+    successRoute = "success-training";
   }
 
   let product = "";
@@ -44,6 +54,9 @@ router.post("/create-checkout-session", async (req, res) => {
       break;
     case process.env.PRICE_500:
       product = "CEO_pay_TOP_500_FINAL.pdf";
+      break;
+    case process.env.PRICE_EXECUTIVE_COMPENSATION:
+      product = "Executive";
       break;
 
     default:

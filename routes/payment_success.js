@@ -50,6 +50,74 @@ Equipay Partners`,
   });
 };
 
+const notifyAdmin = (product, email, phone, company, title) => {
+  const mailOptions = {
+    from: "team@equipaypartners.com",
+    to: "indradeep.mazumdar@gmail.com",
+    subject: "User Training Registration",
+    text: `Dear Admin,
+
+We would like to inform you that a new user has registered for the upcoming training session. Below are the details of the registration:
+
+
+Email: ${email}
+Phone:  ${phone}
+Company:  ${company}
+Title:${title}
+    
+Training Session Details:
+Training Name: ${product}
+    
+Best regards,
+Team Equipay Partners`,
+  };
+
+  // Send the email
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.log(error);
+      res.status(500).send("Email sending failed");
+    } else {
+      console.log("Email sent: " + info.response);
+      res.status(200).send("Email sent successfully");
+    }
+  });
+};
+
+const notifyUser = (product, email, timing) => {
+  const mailOptions = {
+    from: "team@equipaypartners.com",
+    to: email,
+    subject: "Confirmation and Reminder for Upcoming Training Program",
+    text: `Dear Customer,
+
+Thank you for registering for our upcoming training program on December 3rd 2023 . We appreciate your interest and look forward to having you join us!
+
+Event Details:
+
+Date: December 3rd 2023
+Training Name: ${product}
+Time: ${timing}
+Platform: Google Meet
+    
+
+    
+Best regards,
+Team Equipay Partners`,
+  };
+
+  // Send the email
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.log(error);
+      res.status(500).send("Email sending failed");
+    } else {
+      console.log("Email sent: " + info.response);
+      res.status(200).send("Email sent successfully");
+    }
+  });
+};
+
 const router = express.Router();
 
 router.post("/payment-success", async (req, res) => {
@@ -96,4 +164,42 @@ router.get("/send-pdf", (req, res) => {
   });
 });
 
+router.post("/payment-success-training", async (req, res) => {
+  console.log(
+    "🚀 ~ file: payment_success.js:136 ~ router.post ~ req:",
+    req.body
+  );
+
+  // Process the successful payment
+
+  const { product, email, phone, company, title } = req.body;
+  let training = "";
+  let timing = "";
+
+  if (product.includes("Executive")) {
+    training += "Executive Compensation";
+    timing += "Executive Compensation Timing: 11 AM to 1 PM (IST)";
+  }
+
+  if (product.includes("Short")) {
+    if (training !== "") {
+      training += ", ";
+      timing += " | ";
+    }
+    training += "Short Term Incentive";
+    timing += "Short Term Incentive Timing: 1:15 PM to 3:15 PM (IST)";
+  }
+
+  if (product.includes("Long")) {
+    if (training !== "") {
+      training += ", ";
+      timing += " | ";
+    }
+    training += "Long Term Incentive";
+    timing += "Long Term Incentive Timing: 3:30 PM to 5:30 PM (IST)";
+  }
+
+  notifyAdmin(training, email, phone, company, title);
+  notifyUser(training, email, timing);
+});
 module.exports = router;
