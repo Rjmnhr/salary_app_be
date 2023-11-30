@@ -53,8 +53,8 @@ Equipay Partners`,
 const notifyAdmin = (product, email, phone, company, title, timing, date) => {
   const mailOptions = {
     from: "team@equipaypartners.com",
-    // to: "indradeep.mazumdar@gmail.com",
-    to: "renjithcm.renju@gmail.com",
+    to: "indradeep.mazumdar@gmail.com",
+    // to: "renjithcm.renju@gmail.com",
     subject: "User Training Registration",
     text: `Dear Admin,
 
