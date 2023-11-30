@@ -50,11 +50,11 @@ Equipay Partners`,
   });
 };
 
-const notifyAdmin = (product, email, phone, company, title, timing) => {
+const notifyAdmin = (product, email, phone, company, title, timing, date) => {
   const mailOptions = {
     from: "team@equipaypartners.com",
-    to: "indradeep.mazumdar@gmail.com",
-    // to: "renjithcm.renju@gmail.com",
+    // to: "indradeep.mazumdar@gmail.com",
+    to: "renjithcm.renju@gmail.com",
     subject: "User Training Registration",
     text: `Dear Admin,
 
@@ -69,6 +69,7 @@ Title:${title}
 Training Session Details:
 Training Name: ${product}
 Time: ${timing}
+Date: December ${date}
 
     
 Best regards,
@@ -87,7 +88,7 @@ Team Equipay Partners`,
   });
 };
 
-const notifyUser = (product, email, timing) => {
+const notifyUser = (product, email, timing, date) => {
   const mailOptions = {
     from: "team@equipaypartners.com",
     to: email,
@@ -98,7 +99,7 @@ Thank you for registering for our upcoming training program on December 3rd 2023
 
 Event Details:
 
-Date: December 3rd 2023
+Date: December ${date} 2023
 Training Name: ${product}
 Time: ${timing}
 Platform: Google Meet
@@ -180,7 +181,7 @@ router.post("/payment-success-training", async (req, res) => {
 
   // Process the successful payment
 
-  const { product, email, phone, company, title } = req.body;
+  const { product, email, phone, company, title, date } = req.body;
   let training = "";
   let timing = "";
 
@@ -207,7 +208,7 @@ router.post("/payment-success-training", async (req, res) => {
     timing += "Long Term Incentive Timing: 3:30 PM to 5:30 PM (IST)";
   }
 
-  notifyAdmin(training, email, phone, company, title, timing);
-  notifyUser(training, email, timing);
+  notifyAdmin(training, email, phone, company, title, timing, date);
+  notifyUser(training, email, timing, date);
 });
 module.exports = router;
