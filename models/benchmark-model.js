@@ -8,10 +8,10 @@ const BenchmarkModel = {
       let listOfCompanies = getData.companies.split(",");
       const placeholders = listOfCompanies.map(() => "?").join(",");
 
-      const query = `SELECT c.salary, c.directors_sitting_fees, c.total_remuneration, b.market_capitalisation_2023, b.total_assets_2023, b.sales_2023, b.PAT_2023
+      const query = `SELECT c.salary, c.directors_sitting_fees, c.total_remuneration, b.market_capitalisation_2023, b.total_assets_2023, b.sales_2023, b.PAT_2023, c.board_meetings_attended_nos, c.no_of_oth_cos_director_nos, c.no_of_committee_pos_held_nos
       FROM benchmark_2023 b
       JOIN companies_2023 c ON b.company_name = c.company_name
-      WHERE c.designation_category = ? AND b.company_name IN (${placeholders});`;
+      WHERE c.designation_category = ? AND b.company_name IN (${placeholders}) AND c.salary >= 200000 ;`;
 
       // Combine query and parameters for logging
       const loggableQuery = connection.format(query, [
@@ -41,7 +41,7 @@ const BenchmarkModel = {
       const placeholdersForCompany = listOfCompanies.map(() => "?").join(",");
       const placeholdersForSymbols = listOfSymbols.map(() => "?").join(",");
 
-      const query = `SELECT salary, directors_sitting_fees FROM companies_2021 WHERE designation_category = ? AND (company_name IN (${placeholdersForCompany}) OR nse_symbol IN (${placeholdersForSymbols}) )`;
+      const query = `SELECT salary, directors_sitting_fees FROM companies_2021 WHERE designation_category = ?  AND salary >= 200000 AND (company_name IN (${placeholdersForCompany})  ) `;
 
       // Combine query and parameters for logging
       const loggableQuery = connection.format(query, [
@@ -73,7 +73,7 @@ const BenchmarkModel = {
       const placeholdersForCompany = listOfCompanies.map(() => "?").join(",");
       const placeholdersForSymbols = listOfSymbols.map(() => "?").join(",");
 
-      const query = `SELECT salary, directors_sitting_fees FROM benchmark WHERE designation_category = ? AND (company_name IN (${placeholdersForCompany}) OR nse_symbol IN (${placeholdersForSymbols}) )`;
+      const query = `SELECT salary, directors_sitting_fees FROM benchmark WHERE designation_category = ? AND salary >= 200000 AND (company_name IN (${placeholdersForCompany}) OR nse_symbol IN (${placeholdersForSymbols}) )`;
 
       // Combine query and parameters for logging
       const loggableQuery = connection.format(query, [
