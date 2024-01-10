@@ -14,6 +14,7 @@ const paymentSuccessRoutes = require("./routes/payment_success");
 const enquiryRoutes = require("./routes/enquiry");
 const benchmarkRoutes = require("./routes/benchmark-routes");
 const trackDataRoutes = require("./routes/track-data-route");
+const surveyRoutes = require("./routes/survey-route");
 //App config
 const app = express();
 const port = process.env.PORT || 8003;
@@ -59,5 +60,6 @@ app.use("/api/benchmark", benchmarkRoutes);
 app.use(checkoutRoutes);
 app.use(paymentSuccessRoutes);
 app.use("/api/track-data", trackDataRoutes);
+app.use("/api/survey", surveyRoutes);
 
 app.listen(port, () => console.log(`server is up on ${port}`));

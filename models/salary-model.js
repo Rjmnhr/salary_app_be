@@ -49,6 +49,8 @@ const SalaryModel = {
         FROM naukri_extract
         WHERE ${conditions} mapped_job_title = '${getAll.job_title}' AND location LIKE '%${getAll.location}%'
         ${experienceQuery} AND mapped_average_sal > 2`;
+        
+      console.log("🚀 ~ file: salary-model.js:52 ~ getAll: ~ query:", query)
 
       const [rows] = await connection.query(query);
 
