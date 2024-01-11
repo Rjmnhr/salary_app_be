@@ -76,8 +76,8 @@ const SurveyModel = {
 
     try {
       const query = `
-        INSERT INTO survey_register (name, email, phone, title, organization, sector , revenue)
-        VALUES (?, ?, ?, ?,?, ?, ?)
+        INSERT INTO survey_register (name, email, phone, title, organization, sector , revenue , geographies)
+        VALUES (?, ?, ?, ?,?, ?, ?, ?)
       `;
 
       const [rows] = await connection.query(query, [
@@ -88,6 +88,7 @@ const SurveyModel = {
         register.organization,
         register.sector,
         register.revenue,
+        register.geographies,
       ]);
 
       return rows;
