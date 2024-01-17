@@ -15,6 +15,7 @@ const enquiryRoutes = require("./routes/enquiry");
 const benchmarkRoutes = require("./routes/benchmark-routes");
 const trackDataRoutes = require("./routes/track-data-route");
 const surveyRoutes = require("./routes/survey-route");
+const KPIRoutes = require("./routes/kpi-routes");
 //App config
 const app = express();
 const port = process.env.PORT || 8003;
@@ -57,6 +58,7 @@ app.use("/api/token", tokenRoutes);
 app.use("/api/enquiry", enquiryRoutes);
 app.use("/api/report", reportRoutes);
 app.use("/api/benchmark", benchmarkRoutes);
+app.use("/api/kpi", KPIRoutes);
 app.use(checkoutRoutes);
 app.use(paymentSuccessRoutes);
 app.use("/api/track-data", trackDataRoutes);
