@@ -25,12 +25,12 @@ const notifyByMailRegistration = (data) => {
   // Set up email data
   const mailOptions = {
     from: "team@equipaypartners.com",
-    // to: "renjithcm.renju@gmail.com",
-    to: "indradeep.mazumdar@gmail.com",
-    subject: `New Registration for Salary Survey`,
+    to: "renjithcm.renju@gmail.com",
+    // to: "indradeep.mazumdar@gmail.com",
+    subject: `New Submission for Salary Survey`,
     text: `
     
-We are pleased to inform you that a new customer has expressed interest on our Salary Survey. Below are the details of the new customer:
+We are pleased to inform you that a customer has submitted Salary Survey. Below are the details of the  customer:
     
 Name: ${name}
 Email: ${email}
@@ -63,7 +63,16 @@ const SurveyController = {
   uploadExcel: async (req, res) => {
     try {
       // Assuming the file is uploaded using multer and available in req.file.buffer
-      const result = await SurveyModel.storeExcelData(req.file.buffer);
+      const result = await SurveyModel.storeExcelData(
+        req.file.buffer,
+        req.body
+      );
+
+      const registerSubmission = await SurveyModel.register(req.body);
+
+      if (registerSubmission) {
+        notifyByMailRegistration(req.body);
+      }
 
       res.status(200).json(result);
     } catch (err) {

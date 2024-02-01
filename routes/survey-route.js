@@ -16,8 +16,8 @@ const notifyByMailDownload = (ipAddress) => {
   // Set up email data
   const mailOptions = {
     from: "team@equipaypartners.com",
-    // to: "renjithcm.renju@gmail.com",
-    to: "indradeep.mazumdar@gmail.com",
+    to: "renjithcm.renju@gmail.com",
+    // to: "indradeep.mazumdar@gmail.com",
     subject: `Salary Survey Template Download`,
     text: `Admin,
     
