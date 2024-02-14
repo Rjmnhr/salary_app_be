@@ -3,10 +3,15 @@ const BenchmarkController = require("../controller/benchmark-controller");
 const router = express.Router();
 
 router.get("/sectors", BenchmarkController.getSectors);
+router.get("/sectors-uk", BenchmarkController.getSectorsUK);
 router.get("/distinct-companies", BenchmarkController.getDistinctCompanies);
 router.post("/industries", BenchmarkController.getIndustries);
 router.post("/industries-index", BenchmarkController.getIndustriesByIndex);
 router.post("/companies-hand", BenchmarkController.getCompaniesByHandSelect);
+router.post(
+  "/companies-hand-uk",
+  BenchmarkController.getCompaniesByHandSelectUK
+);
 router.post(
   "/companies-hand/count",
   BenchmarkController.getCompaniesByHandSelectCount

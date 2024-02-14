@@ -3,7 +3,17 @@ const multer = require("multer");
 const SurveyController = require("../controller/survey-controller");
 const nodemailer = require("nodemailer");
 
-const notifyByMailDownload = (ipAddress) => {
+const notifyByMailDownload = (ipAddress, data) => {
+  const {
+    name,
+    email,
+    phone,
+    title,
+    organization,
+    sector,
+    revenue,
+    geographies,
+  } = data;
   // Create a Nodemailer transporter
   const transporter = nodemailer.createTransport({
     service: "Gmail", // Example: 'Gmail' or 'SMTP'
@@ -16,14 +26,22 @@ const notifyByMailDownload = (ipAddress) => {
   // Set up email data
   const mailOptions = {
     from: "team@equipaypartners.com",
-    // to: "renjithcm.renju@gmail.com",
-    to: "indradeep.mazumdar@gmail.com",
+    to: "renjithcm.renju@gmail.com",
+    // to: "indradeep.mazumdar@gmail.com",
     subject: `Salary Survey Template Download`,
     text: `Admin,
     
 A user has downloaded the Salary Survey Template Excel file.
 
 User IP Address: ${ipAddress}
+Name: ${name}
+Email: ${email}
+Phone: ${phone}
+Title: ${title}
+Organization: ${organization}
+Sector: ${sector}
+Revenue: ${revenue}
+Geographies: ${geographies}
 
 Regards,
 Equipay Partners Team
@@ -58,8 +76,8 @@ router.post(
 );
 router.post("/register", SurveyController.register);
 
-router.get("/template-download", captureIpAddress, (req, res) => {
-  notifyByMailDownload(req.userIpAddress);
+router.post("/template-download", captureIpAddress, (req, res) => {
+  notifyByMailDownload(req.userIpAddress, req.body);
 });
 
 module.exports = router;

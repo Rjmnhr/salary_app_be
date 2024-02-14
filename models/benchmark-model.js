@@ -128,6 +128,22 @@ const BenchmarkModel = {
       connection.release(); // Release the connection back to the pool
     }
   },
+  getSectorsUK: async () => {
+    const connection = await pool.getConnection();
+
+    try {
+      const query = `Select distinct sector from benchmark_uk`;
+
+      const [rows] = await connection.query(query);
+      return rows;
+    } catch (err) {
+      // Handle errors here
+      console.error(err);
+      throw err;
+    } finally {
+      connection.release(); // Release the connection back to the pool
+    }
+  },
   getIndustries: async (getIndustries) => {
     const connection = await pool.getConnection();
     let listOfSectors = getIndustries.sectors?.split(",");
@@ -245,6 +261,82 @@ const BenchmarkModel = {
       }
 
       const loggableQuery = connection.format(query, [listOfIndustries]);
+
+      const [rows] = await connection.query(query, [listOfIndustries]);
+      return rows;
+    } catch (err) {
+      console.error(err);
+      throw err;
+    } finally {
+      connection.release();
+    }
+  },
+  getCompaniesByHandSelectUK: async (getCompaniesByHandSelectUK) => {
+    console.log(
+      "🚀 ~ getCompaniesByHandSelectUK: ~ getCompaniesByHandSelectUK:",
+      getCompaniesByHandSelectUK
+    );
+    const connection = await pool.getConnection();
+    const industries = getCompaniesByHandSelectUK.industries;
+
+    let listOfIndustries = industries?.split(",");
+    let industryGroupFilter = "";
+
+    // Check if industries are provided
+    if (industries) {
+      industryGroupFilter = "sector IN (?) ";
+    }
+
+    // Function to replace NaN, null, or undefined with zero
+    const replace = (value) => {
+      return isNaN(value) || value === null || value === undefined ? 0 : value;
+    };
+
+    // Build conditions based on provided attributes
+    const conditions = [];
+
+    if (
+      replace(getCompaniesByHandSelectUK.maxMarketCap) !== "0" &&
+      replace(getCompaniesByHandSelectUK.maxMarketCap) !== 0
+    ) {
+      conditions.push(
+        `(market_cap BETWEEN ${replace(
+          getCompaniesByHandSelectUK.minMarketCap
+        )} AND ${replace(getCompaniesByHandSelectUK.maxMarketCap)})`
+      );
+    }
+
+    if (
+      replace(getCompaniesByHandSelectUK.maxAssets) !== "0" &&
+      replace(getCompaniesByHandSelectUK.maxAssets) !== 0
+    ) {
+      conditions.push(
+        `(total_revenue BETWEEN ${replace(
+          getCompaniesByHandSelectUK.minAssets
+        )} AND ${replace(getCompaniesByHandSelectUK.maxAssets)})`
+      );
+    }
+
+    try {
+      let query = `
+        SELECT distinct company
+        FROM benchmark_uk
+        WHERE ${industryGroupFilter}`;
+
+      if (industries && conditions.length > 0) {
+        query += `AND `;
+      }
+
+      // Add conditions only if there are any
+      if (conditions.length > 0) {
+        query += `( ${conditions.join(" OR ")})`;
+      }
+
+      const loggableQuery = connection.format(query, [listOfIndustries]);
+      console.log(
+        "🚀 ~ getCompaniesByHandSelectUK: ~ loggableQuery:",
+        loggableQuery
+      );
 
       const [rows] = await connection.query(query, [listOfIndustries]);
       return rows;

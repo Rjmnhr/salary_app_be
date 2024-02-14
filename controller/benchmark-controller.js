@@ -56,6 +56,17 @@ const BenchmarkController = {
       res.status(500).json({ message: err });
     }
   },
+  getSectorsUK: async (req, res) => {
+    try {
+      const data = await BenchmarkModel.getSectorsUK(req.body);
+
+      res.status(200).json(data);
+    } catch (err) {
+      console.error(err);
+
+      res.status(500).json({ message: err });
+    }
+  },
   getIndustries: async (req, res) => {
     try {
       const data = await BenchmarkModel.getIndustries(req.body);
@@ -81,6 +92,17 @@ const BenchmarkController = {
   getCompaniesByHandSelect: async (req, res) => {
     try {
       const data = await BenchmarkModel.getCompaniesByHandSelect(req.body);
+
+      res.status(200).json(data);
+    } catch (err) {
+      console.error(err);
+
+      res.status(500).json({ message: err });
+    }
+  },
+  getCompaniesByHandSelectUK: async (req, res) => {
+    try {
+      const data = await BenchmarkModel.getCompaniesByHandSelectUK(req.body);
 
       res.status(200).json(data);
     } catch (err) {
