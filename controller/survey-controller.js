@@ -25,8 +25,8 @@ const notifyByMailFileUpload = (data) => {
   // Set up email data
   const mailOptions = {
     from: "team@equipaypartners.com",
-    to: "renjithcm.renju@gmail.com",
-    // to: "indradeep.mazumdar@gmail.com",
+    // to: "renjithcm.renju@gmail.com",
+    to: "indradeep.mazumdar@gmail.com",
     subject: `New Submission for Salary Survey`,
     text: `
     
@@ -83,8 +83,8 @@ const notifyByMailRegistration = (data) => {
   // Set up email data
   const mailOptions = {
     from: "team@equipaypartners.com",
-    to: "renjithcm.renju@gmail.com",
-    // to: "indradeep.mazumdar@gmail.com",
+    // to: "renjithcm.renju@gmail.com",
+    to: "indradeep.mazumdar@gmail.com",
     subject: `New Submission for Salary Survey`,
     text: `
     
