@@ -4,6 +4,7 @@ const SalaryController = {
   getAllRoles: async (req, res) => {
     try {
       const data = await SalaryModel.getAllRoles(req.body);
+   
 
       res.status(200).json(data);
     } catch (err) {
@@ -15,6 +16,7 @@ const SalaryController = {
   getAll: async (req, res) => {
     try {
       const data = await SalaryModel.getAll(req.body);
+      console.log("🚀 ~ getAll: ~ data:", data)
 
       res.status(200).json({ data: data.rows, bool: data.bool });
     } catch (err) {

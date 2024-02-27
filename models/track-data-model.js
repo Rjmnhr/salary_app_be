@@ -27,21 +27,18 @@ const TrackedData = {
     }
   },
   saveTrackedData2: async (saveTrackedData2) => {
+    const path = saveTrackedData2?.path?.pathname;
     const connection = await pool.getConnection();
 
     try {
       const query = `
     
       INSERT INTO tracking_data_2 (user_id,path,ip_address,time )
-      VALUES (?,?, ?,?)
+      VALUES (${saveTrackedData2.id},'${path}', '${saveTrackedData2.ipAddress}',${saveTrackedData2.timeSpent})
     `;
 
-      const [rows] = await connection.query(query, [
-        saveTrackedData2.id,
-        saveTrackedData2.path, // Add the path here
-        saveTrackedData2.ipAddress, // Add the IP address here
-        saveTrackedData2.timeSpent,
-      ]);
+
+      const [rows] = await connection.query(query);
 
       return rows;
     } catch (err) {

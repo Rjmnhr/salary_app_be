@@ -39,18 +39,15 @@ const SalaryModel = {
 
       let experienceQuery = "";
       if (getAll.experience) {
-        experienceQuery = `AND
-          CAST(SUBSTRING_INDEX(experience, '-', 1) AS UNSIGNED) <= ${getAll.experience}
-          AND
-          CAST(SUBSTRING_INDEX(experience, '-', -1) AS UNSIGNED) >= ${getAll.experience} `;
+        experienceQuery = `AND experience = '${getAll.experience}' `;
       }
 
       const query = `SELECT experience, mapped_job_title, mapped_job_title_1, current_date, salary, mapped_average_sal, avg_experience, combined_skills
         FROM naukri_extract
         WHERE ${conditions} mapped_job_title = '${getAll.job_title}' AND location LIKE '%${getAll.location}%'
         ${experienceQuery} AND mapped_average_sal > 2`;
-        
-      console.log("🚀 ~ file: salary-model.js:52 ~ getAll: ~ query:", query)
+
+      console.log("🚀 ~ getAll: ~ query:", query);
 
       const [rows] = await connection.query(query);
 
@@ -104,10 +101,7 @@ const SalaryModel = {
 
       let experienceQuery = "";
       if (getByRole.experience) {
-        experienceQuery = `AND
-          CAST(SUBSTRING_INDEX(experience, '-', 1) AS UNSIGNED) <= ${getByRole.experience}
-          AND
-          CAST(SUBSTRING_INDEX(experience, '-', -1) AS UNSIGNED) >= ${getByRole.experience} `;
+        experienceQuery = `AND experience = '${getByRole.experience}' `;
       }
 
       const query = `SELECT experience, mapped_job_title, mapped_job_title_1, current_date, salary, mapped_average_sal, avg_experience, combined_skills
@@ -155,7 +149,7 @@ const SalaryModel = {
 
       const query = `SELECT experience, mapped_job_title, mapped_job_title_1, current_date, salary, mapped_average_sal, avg_experience, combined_skills
         FROM naukri_extract
-        WHERE  ${conditions} mapped_job_title = '${getByRoleNoExperience.job_title}'   AND mapped_average_sal >= 2 `;
+        WHERE  ${conditions} mapped_job_title = '${getByRoleNoExperience.job_title}'  AND mapped_average_sal >= 2 `;
 
       const [rows] = await connection.query(query);
 
