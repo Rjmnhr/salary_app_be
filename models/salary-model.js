@@ -4,7 +4,7 @@ const NodeCache = require("node-cache");
 const skillsCache = new NodeCache();
 
 const SalaryModel = {
-  getAllRoles: async (getAllRoles) => {
+  getAllTitles: async (getAllTitles) => {
     const connection = await pool.getConnection();
 
     try {
@@ -21,11 +21,31 @@ const SalaryModel = {
       connection.release(); // Release the connection back to the pool
     }
   },
-  getAll: async (getAll) => {
+  getAllSectors: async (getAllSectors) => {
     const connection = await pool.getConnection();
 
     try {
-      const userInputSkills = getAll.skills;
+      const query = `SELECT distinct industry_type FROM naukri_extract where mapped_job_title = '${getAllSectors.title}' `;
+
+      const [rows] = await connection.query(query);
+
+      return rows;
+    } catch (err) {
+      // Handle errors here
+      console.error(err);
+      throw err;
+    } finally {
+      connection.release(); // Release the connection back to the pool
+    }
+  },
+  salaryData: async (salaryData) => {
+
+    const connection = await pool.getConnection();
+
+    const threshold = salaryData.threshold;
+
+    try {
+      const userInputSkills = salaryData.skills;
       let conditions = "";
       if (userInputSkills && userInputSkills.length > 0) {
         conditions = userInputSkills
@@ -38,22 +58,26 @@ const SalaryModel = {
       }
 
       let experienceQuery = "";
-      if (getAll.experience) {
-        experienceQuery = `AND experience = '${getAll.experience}' `;
+      if (salaryData.experience) {
+        experienceQuery = `AND experience = '${salaryData.experience}' `;
+      }
+
+      let sectorQuery = "";
+      if (salaryData.sector) {
+        sectorQuery = `AND industry_type = '${salaryData.sector}' `;
       }
 
       const query = `SELECT experience, mapped_job_title, mapped_job_title_1, current_date, salary, mapped_average_sal, avg_experience, combined_skills
         FROM naukri_extract
-        WHERE ${conditions} mapped_job_title = '${getAll.job_title}' AND location LIKE '%${getAll.location}%'
-        ${experienceQuery} AND mapped_average_sal > 2`;
+        WHERE ${conditions} mapped_job_title = '${salaryData.job_title}' AND location LIKE '%${salaryData.location}%'
+        ${experienceQuery} ${sectorQuery} AND mapped_average_sal > 2`;
 
-      console.log("🚀 ~ getAll: ~ query:", query);
 
       const [rows] = await connection.query(query);
 
       const rowsCheck = rows;
 
-      if (rowsCheck.length > 1) {
+      if (rowsCheck.length > threshold) {
         skillsCache.set("key", true);
         let bool = "";
         if (userInputSkills && userInputSkills.length > 0) {
@@ -68,8 +92,8 @@ const SalaryModel = {
 
         const query = `SELECT experience, mapped_job_title, mapped_job_title_1, current_date, salary, mapped_average_sal, avg_experience, combined_skills
         FROM naukri_extract
-        WHERE  mapped_job_title = '${getAll.job_title}' AND location LIKE '%${getAll.location}%'
-        ${experienceQuery} AND mapped_average_sal > 2 `;
+        WHERE  mapped_job_title = '${salaryData.job_title}' AND location LIKE '%${salaryData.location}%'
+        ${experienceQuery} ${sectorQuery} AND mapped_average_sal > 2 `;
         const [rows] = await connection.query(query);
         const bool = false;
         return { rows: rows, bool: bool };
@@ -82,12 +106,12 @@ const SalaryModel = {
       connection.release(); // Release the connection back to the pool
     }
   },
-  getByRole: async (getByRole) => {
+  salaryDataWithoutLoc: async (salaryDataWithoutLoc) => {
     const connection = await pool.getConnection();
-
+    const threshold = salaryDataWithoutLoc.threshold;
     try {
       const storeSkillCache = skillsCache.get("key");
-      const userInputSkills = getByRole.skills;
+      const userInputSkills = salaryDataWithoutLoc.skills;
       let conditions = "";
       if (userInputSkills && userInputSkills.length > 0 && storeSkillCache) {
         conditions = userInputSkills
@@ -100,24 +124,28 @@ const SalaryModel = {
       }
 
       let experienceQuery = "";
-      if (getByRole.experience) {
-        experienceQuery = `AND experience = '${getByRole.experience}' `;
+      if (salaryDataWithoutLoc.experience) {
+        experienceQuery = `AND experience = '${salaryDataWithoutLoc.experience}' `;
       }
 
+      let sectorQuery = "";
+      if (salaryDataWithoutLoc.sector) {
+        sectorQuery = `AND industry_type = '${salaryDataWithoutLoc.sector}' `;
+      }
       const query = `SELECT experience, mapped_job_title, mapped_job_title_1, current_date, salary, mapped_average_sal, avg_experience, combined_skills
         FROM naukri_extract
-        WHERE  ${conditions} mapped_job_title = '${getByRole.job_title}'  ${experienceQuery}  AND mapped_average_sal >= 2`;
+        WHERE  ${conditions} mapped_job_title = '${salaryDataWithoutLoc.job_title}'  ${experienceQuery}  ${sectorQuery} AND mapped_average_sal >= 2`;
 
       const [rows] = await connection.query(query);
 
       const rowsCheck = rows;
 
-      if (rowsCheck.length > 1) {
+      if (rowsCheck.length > threshold) {
         return rows;
       } else {
         const query = `SELECT experience, mapped_job_title, mapped_job_title_1, current_date, salary, mapped_average_sal, avg_experience, combined_skills
         FROM naukri_extract
-        WHERE mapped_job_title = '${getByRole.job_title}'  ${experienceQuery} AND mapped_average_sal >= 2`;
+        WHERE mapped_job_title = '${salaryDataWithoutLoc.job_title}'  ${experienceQuery} ${sectorQuery} AND mapped_average_sal >= 2`;
         const [rows] = await connection.query(query);
 
         return rows;
@@ -130,12 +158,12 @@ const SalaryModel = {
       connection.release(); // Release the connection back to the pool
     }
   },
-  getByRoleNoExperience: async (getByRoleNoExperience) => {
+  salaryDataWithoutExp: async (salaryDataWithoutExp) => {
     const connection = await pool.getConnection();
-
+    const threshold = salaryDataWithoutExp.threshold;
     try {
       const storeSkillCache = skillsCache.get("key");
-      const userInputSkills = getByRoleNoExperience.skills;
+      const userInputSkills = salaryDataWithoutExp.skills;
       let conditions = "";
       if (userInputSkills && userInputSkills.length > 0 && storeSkillCache) {
         conditions = userInputSkills
@@ -147,20 +175,25 @@ const SalaryModel = {
         conditions = `(${conditions}) AND`;
       }
 
+      let sectorQuery = "";
+      if (salaryDataWithoutExp.sector) {
+        sectorQuery = `AND industry_type = '${salaryDataWithoutExp.sector}' `;
+      }
+
       const query = `SELECT experience, mapped_job_title, mapped_job_title_1, current_date, salary, mapped_average_sal, avg_experience, combined_skills
         FROM naukri_extract
-        WHERE  ${conditions} mapped_job_title = '${getByRoleNoExperience.job_title}'  AND mapped_average_sal >= 2 `;
+        WHERE  ${conditions} mapped_job_title = '${salaryDataWithoutExp.job_title}' ${sectorQuery}  AND mapped_average_sal >= 2 `;
 
       const [rows] = await connection.query(query);
 
       const rowsCheck = rows;
 
-      if (rowsCheck.length > 1) {
+      if (rowsCheck.length > threshold) {
         return rows;
       } else {
         const query = `SELECT experience, mapped_job_title, mapped_job_title_1, current_date, salary, mapped_average_sal, avg_experience, combined_skills
         FROM naukri_extract
-        WHERE mapped_job_title = '${getByRoleNoExperience.job_title}' AND mapped_average_sal >= 2`;
+        WHERE mapped_job_title = '${salaryDataWithoutExp.job_title}' ${sectorQuery} AND mapped_average_sal >= 2`;
         const [rows] = await connection.query(query);
 
         return rows;

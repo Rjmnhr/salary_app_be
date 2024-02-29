@@ -5,8 +5,8 @@ const SalaryModel = {
     const connection = await pool.getConnection();
 
     try {
-      const query = `INSERT INTO reports_data (user_id, job_titles, experience, skills, location, manage, supervise)
-      VALUES (?, ?, ?, ?, ?, ?, ?)`;
+      const query = `INSERT INTO reports_data (user_id, job_titles, experience, skills, location, manage, supervise, sector)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
 
       const [rows] = await connection.query(query, [
         saveReports.user_id,
@@ -18,6 +18,7 @@ const SalaryModel = {
         saveReports.manage,
 
         saveReports.supervise,
+        saveReports.sector,
       ]);
 
       return rows;
@@ -40,6 +41,7 @@ const SalaryModel = {
       skills,
       manage,
       supervise
+      sector
       FROM reports_data WHERE user_id = ${getReportByID.user_id}`;
 
       const [rows] = await connection.query(query);

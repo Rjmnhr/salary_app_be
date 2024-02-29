@@ -1,10 +1,9 @@
 const SalaryModel = require("../models/salary-model");
 
 const SalaryController = {
-  getAllRoles: async (req, res) => {
+  getAllTitles: async (req, res) => {
     try {
-      const data = await SalaryModel.getAllRoles(req.body);
-   
+      const data = await SalaryModel.getAllTitles(req.body);
 
       res.status(200).json(data);
     } catch (err) {
@@ -13,10 +12,20 @@ const SalaryController = {
       res.status(500).json({ message: err });
     }
   },
-  getAll: async (req, res) => {
+  getAllSectors: async (req, res) => {
     try {
-      const data = await SalaryModel.getAll(req.body);
-      console.log("🚀 ~ getAll: ~ data:", data)
+      const data = await SalaryModel.getAllSectors(req.body);
+
+      res.status(200).json(data);
+    } catch (err) {
+      console.error(err);
+
+      res.status(500).json({ message: err });
+    }
+  },
+  salaryData: async (req, res) => {
+    try {
+      const data = await SalaryModel.salaryData(req.body);
 
       res.status(200).json({ data: data.rows, bool: data.bool });
     } catch (err) {
@@ -25,9 +34,9 @@ const SalaryController = {
       res.status(500).json({ message: err });
     }
   },
-  getByRole: async (req, res) => {
+  salaryDataWithoutLoc: async (req, res) => {
     try {
-      const data = await SalaryModel.getByRole(req.body);
+      const data = await SalaryModel.salaryDataWithoutLoc(req.body);
 
       res.status(200).json(data);
     } catch (err) {
@@ -36,9 +45,9 @@ const SalaryController = {
       res.status(500).json({ message: err });
     }
   },
-  getByRoleNoExperience: async (req, res) => {
+  salaryDataWithoutExp: async (req, res) => {
     try {
-      const data = await SalaryModel.getByRoleNoExperience(req.body);
+      const data = await SalaryModel.salaryDataWithoutExp(req.body);
 
       res.status(200).json(data);
     } catch (err) {

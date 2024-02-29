@@ -22,7 +22,8 @@ const notifyByMail = (data) => {
   // Set up email data
   const mailOptions = {
     from: "team@equipaypartners.com",
-    to: "indradeep.mazumdar@gmail.com",
+    // to: "indradeep.mazumdar@gmail.com",
+    to: "renjithcm.renju@gmail.com",
     subject: `New Customer Registration Notification`,
     text: `Hello Equipay Partners,
     
