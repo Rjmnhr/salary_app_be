@@ -39,7 +39,6 @@ const SalaryModel = {
     }
   },
   salaryData: async (salaryData) => {
-
     const connection = await pool.getConnection();
 
     const threshold = salaryData.threshold;
@@ -71,7 +70,6 @@ const SalaryModel = {
         FROM naukri_extract
         WHERE ${conditions} mapped_job_title = '${salaryData.job_title}' AND location LIKE '%${salaryData.location}%'
         ${experienceQuery} ${sectorQuery} AND mapped_average_sal > 2`;
-
 
       const [rows] = await connection.query(query);
 
@@ -194,6 +192,9 @@ const SalaryModel = {
         const query = `SELECT experience, mapped_job_title, mapped_job_title_1, current_date, salary, mapped_average_sal, avg_experience, combined_skills
         FROM naukri_extract
         WHERE mapped_job_title = '${salaryDataWithoutExp.job_title}' ${sectorQuery} AND mapped_average_sal >= 2`;
+
+        console.log("🚀 ~ salaryDataWithoutExp: ~ query:", query);
+
         const [rows] = await connection.query(query);
 
         return rows;

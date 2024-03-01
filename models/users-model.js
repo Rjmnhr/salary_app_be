@@ -2,11 +2,11 @@ const pool = require("../mySQL-DB");
 const CryptoJS = require("crypto-js");
 
 const Users = {
-  getAll: async (getAll) => {
+  getUserData: async (userID) => {
     const connection = await pool.getConnection();
 
     try {
-      let query = `SELECT * FROM users WHERE id = '${getAll.id}'`;
+      let query = `SELECT * FROM users WHERE id = '${userID}'`;
       const [rows] = await connection.query(query);
       return rows;
     } catch (err) {

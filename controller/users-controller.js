@@ -54,13 +54,18 @@ Equipay Partners Team
 };
 
 const UsersController = {
-  getAll: async (req, res) => {
+  getUserData: async (req, res) => {
     try {
-      const userData = (await Users.getAll({ id: req.query.id }))[0];
+      const userData = (await Users.getUserData({ id: req.query.id }))[0];
 
-      if (!userData) return res.status(400).json("user details not found");
+      if (!userData)
+        return res
+          .status(400)
+          .json({ status: "400", message: "user details not found" });
 
-      return res.status(200).json(userData);
+      return res
+        .status(200)
+        .json({ status: 200, message: "verified ", data: userData });
     } catch (err) {
       console.error(err);
       res.status(500).json(err);
@@ -126,7 +131,8 @@ const UsersController = {
     try {
       const userData = (await Users.loginUser(req.body))[0];
 
-      if (!userData) return res.status(200).json(404);
+      if (!userData)
+        return res.status(200).json({ status: 404, message: "User not found" });
 
       const bytes = CryptoJS.AES.decrypt(
         userData.password,
@@ -135,14 +141,18 @@ const UsersController = {
       const originalPassword = bytes.toString(CryptoJS.enc.Utf8);
 
       if (originalPassword !== req.body.password)
-        return res.status(200).json(404);
+        return res
+          .status(200)
+          .json({ status: 404, message: "Wrong username or password" });
 
       const accessToken = generateAccessToken(userData.id);
       const { password, ...other } = userData;
-      return res.status(200).json({ ...other, accessToken });
+      return res
+        .status(200)
+        .json({ ...other, accessToken: accessToken, status: 200 });
     } catch (err) {
       console.error(err);
-      res.status(500).json(err);
+      res.status(500).json({ status: 500, message: "login failed" });
     }
   },
   resetPassword: async (req, res) => {

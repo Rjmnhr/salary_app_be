@@ -26,6 +26,7 @@ const SalaryController = {
   salaryData: async (req, res) => {
     try {
       const data = await SalaryModel.salaryData(req.body);
+      console.log("🚀 ~ salaryData: ~ data:", data.length);
 
       res.status(200).json({ data: data.rows, bool: data.bool });
     } catch (err) {
@@ -37,6 +38,7 @@ const SalaryController = {
   salaryDataWithoutLoc: async (req, res) => {
     try {
       const data = await SalaryModel.salaryDataWithoutLoc(req.body);
+      console.log("🚀 ~ salaryData: ~ data:", data.length);
 
       res.status(200).json(data);
     } catch (err) {
@@ -48,6 +50,7 @@ const SalaryController = {
   salaryDataWithoutExp: async (req, res) => {
     try {
       const data = await SalaryModel.salaryDataWithoutExp(req.body);
+      console.log("🚀 ~ salaryData: ~ data:", data.length);
 
       res.status(200).json(data);
     } catch (err) {

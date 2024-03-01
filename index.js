@@ -16,7 +16,8 @@ const benchmarkRoutes = require("./routes/benchmark-routes");
 const trackDataRoutes = require("./routes/track-data-route");
 const surveyRoutes = require("./routes/survey-route");
 const KPIRoutes = require("./routes/kpi-routes");
-const generatePdfRoutes = require("./routes/generate-water-mark-pdf");
+
+const jwt = require("jsonwebtoken");
 //App config
 const app = express();
 const port = process.env.PORT || 8003;
@@ -51,6 +52,27 @@ pool
     console.error("Error connecting to MySQL database:", err.message);
   });
 
+function verify(req, res, next) {
+  const authHeader = req.headers.token;
+
+  if (authHeader) {
+    const token = authHeader.split(" ")[1];
+
+    jwt.verify(token, process.env.SECRET_KEY, (err, user) => {
+      if (err)
+        return res
+          .status(403)
+          .json({ status: 403, message: "Token is not valid!" });
+      req.user = user;
+      next();
+    });
+  } else {
+    return res
+      .status(401)
+      .json({ status: 401, message: "you are not authenticated" });
+  }
+}
+
 app.use("/api/salary", salaryRoutes);
 app.use("/api/skills", skillsRoutes);
 app.use("/api/otp", otpAuth);
@@ -64,6 +86,5 @@ app.use(checkoutRoutes);
 app.use(paymentSuccessRoutes);
 app.use("/api/track-data", trackDataRoutes);
 app.use("/api/survey", surveyRoutes);
-app.use("/api", generatePdfRoutes);
 
 app.listen(port, () => console.log(`server is up on ${port}`));
