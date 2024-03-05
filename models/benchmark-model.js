@@ -1,4 +1,4 @@
-const pool = require("../mySQL-DB");
+const pool = require("../config/mySQL-DB");
 
 const BenchmarkModel = {
   getData: async (getData) => {

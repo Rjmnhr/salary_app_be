@@ -1,15 +1,15 @@
-const pool = require("../mySQL-DB");
+const pool = require("../config/mySQL-DB");
 
 const SalaryModel = {
-  saveReports: async (saveReports) => {
+  saveReports: async (saveReports, id) => {
     const connection = await pool.getConnection();
 
     try {
-      const query = `INSERT INTO reports_data (user_id, job_titles, experience, skills, location, manage, supervise, sector)
+      const query = `INSERT INTO price_a_job_reports (user_id, job_titles, experience, skills, location, manage, supervise, sector)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
 
       const [rows] = await connection.query(query, [
-        saveReports.user_id,
+        id,
         saveReports.job_titles,
         saveReports.experience ? saveReports.experience : null,
 
@@ -30,19 +30,43 @@ const SalaryModel = {
       connection.release(); // Release the connection back to the pool
     }
   },
-  getReportByID: async (getReportByID) => {
+  getReportByID: async (id) => {
     const connection = await pool.getConnection();
 
     try {
       const query = `SELECT  
+      report_id,
       job_titles,
       location,
       experience,
       skills,
       manage,
-      supervise
+      supervise,
       sector
-      FROM reports_data WHERE user_id = ${getReportByID.user_id}`;
+      FROM price_a_job_reports WHERE user_id = ${id}`;
+
+      const [rows] = await connection.query(query);
+
+      return rows;
+    } catch (err) {
+      // Handle errors here
+      console.error(err);
+      throw err;
+    } finally {
+      connection.release(); // Release the connection back to the pool
+    }
+  },
+
+  updateReport: async (updateReport) => {
+    const connection = await pool.getConnection();
+
+    try {
+      const query = `UPDATE price_a_job_reports
+      SET experience = '${updateReport.experience}',
+      skills = '${updateReport.skills}',
+      location = '${updateReport.location}',
+      sector = '${updateReport.sector}'
+      WHERE report_id = '${updateReport.id}' ;`;
 
       const [rows] = await connection.query(query);
 

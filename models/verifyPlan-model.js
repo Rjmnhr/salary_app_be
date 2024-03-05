@@ -1,10 +1,10 @@
-const pool = require("../mySQL-DB");
+const pool = require("../config/mySQL-DB");
 
 const verifyPlanModel = {
-  verifyPlan: async (verifyPlan) => {
+  verifyPlan: async (id) => {
     const connection = await pool.getConnection();
     try {
-      let query = `SELECT plan FROM users WHERE id = '${verifyPlan.id}'`;
+      let query = `SELECT plan FROM users WHERE id = '${id}'`;
       const [rows] = await connection.query(query);
       return rows;
     } catch (err) {

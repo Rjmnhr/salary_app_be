@@ -1,11 +1,11 @@
-const pool = require("../mySQL-DB");
+const pool = require("../config/mySQL-DB");
 
 const SkillsModel = {
   getSkillsByRoles: async (getSkillsByRoles) => {
     const connection = await pool.getConnection();
 
     try {
-      const query = `SELECT ${getSkillsByRoles.job_title} FROM skills_and_relevant_roles`;
+      const query = `SELECT ${getSkillsByRoles.job_title} FROM price_a_job_skills_and_relevant_roles`;
       const [rows] = await connection.query(query);
 
       return rows;
@@ -21,7 +21,7 @@ const SkillsModel = {
     const connection = await pool.getConnection();
 
     try {
-      const query = `SELECT ${getTopSkills.job_title} FROM topskills`;
+      const query = `SELECT ${getTopSkills.job_title} FROM price_a_job_topskills`;
       const [rows] = await connection.query(query);
 
       return rows;

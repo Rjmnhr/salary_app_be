@@ -2,9 +2,10 @@ const Users = require("../models/users-model");
 const CryptoJS = require("crypto-js");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
+const getUserID = require("../utils/getUserID");
 
 function generateAccessToken(userId) {
-  return jwt.sign({ id: userId }, process.env.SECRET_KEY, { expiresIn: "5d" });
+  return jwt.sign({ id: userId }, process.env.SECRET_KEY, { expiresIn: "6h" });
 }
 
 const notifyByMail = (data) => {
@@ -55,8 +56,10 @@ Equipay Partners Team
 
 const UsersController = {
   getUserData: async (req, res) => {
+    const userID = getUserID(req);
+
     try {
-      const userData = (await Users.getUserData({ id: req.query.id }))[0];
+      const userData = (await Users.getUserData(userID))[0];
 
       if (!userData)
         return res

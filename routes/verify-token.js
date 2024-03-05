@@ -52,7 +52,6 @@ router.get("/verify", verify, async (req, res) => {
   }
 });
 
-
 router.post("/plan", verify, verifyPlanController.verifyPlan);
 
 module.exports = router;

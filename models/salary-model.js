@@ -1,4 +1,4 @@
-const pool = require("../mySQL-DB");
+const pool = require("../config/mySQL-DB");
 const NodeCache = require("node-cache");
 
 const skillsCache = new NodeCache();
@@ -8,7 +8,7 @@ const SalaryModel = {
     const connection = await pool.getConnection();
 
     try {
-      const query = `SELECT distinct mapped_job_title FROM naukri_extract`;
+      const query = `SELECT distinct mapped_job_title FROM price_a_job`;
 
       const [rows] = await connection.query(query);
 
@@ -25,7 +25,7 @@ const SalaryModel = {
     const connection = await pool.getConnection();
 
     try {
-      const query = `SELECT distinct industry_type FROM naukri_extract where mapped_job_title = '${getAllSectors.title}' `;
+      const query = `SELECT distinct industry_type FROM price_a_job where mapped_job_title = '${getAllSectors.title}' `;
 
       const [rows] = await connection.query(query);
 
@@ -67,7 +67,7 @@ const SalaryModel = {
       }
 
       const query = `SELECT experience, mapped_job_title, mapped_job_title_1, current_date, salary, mapped_average_sal, avg_experience, combined_skills
-        FROM naukri_extract
+        FROM price_a_job
         WHERE ${conditions} mapped_job_title = '${salaryData.job_title}' AND location LIKE '%${salaryData.location}%'
         ${experienceQuery} ${sectorQuery} AND mapped_average_sal > 2`;
 
@@ -89,7 +89,7 @@ const SalaryModel = {
         skillsCache.set("key", false);
 
         const query = `SELECT experience, mapped_job_title, mapped_job_title_1, current_date, salary, mapped_average_sal, avg_experience, combined_skills
-        FROM naukri_extract
+        FROM price_a_job
         WHERE  mapped_job_title = '${salaryData.job_title}' AND location LIKE '%${salaryData.location}%'
         ${experienceQuery} ${sectorQuery} AND mapped_average_sal > 2 `;
         const [rows] = await connection.query(query);
@@ -131,7 +131,7 @@ const SalaryModel = {
         sectorQuery = `AND industry_type = '${salaryDataWithoutLoc.sector}' `;
       }
       const query = `SELECT experience, mapped_job_title, mapped_job_title_1, current_date, salary, mapped_average_sal, avg_experience, combined_skills
-        FROM naukri_extract
+        FROM price_a_job
         WHERE  ${conditions} mapped_job_title = '${salaryDataWithoutLoc.job_title}'  ${experienceQuery}  ${sectorQuery} AND mapped_average_sal >= 2`;
 
       const [rows] = await connection.query(query);
@@ -142,7 +142,7 @@ const SalaryModel = {
         return rows;
       } else {
         const query = `SELECT experience, mapped_job_title, mapped_job_title_1, current_date, salary, mapped_average_sal, avg_experience, combined_skills
-        FROM naukri_extract
+        FROM price_a_job
         WHERE mapped_job_title = '${salaryDataWithoutLoc.job_title}'  ${experienceQuery} ${sectorQuery} AND mapped_average_sal >= 2`;
         const [rows] = await connection.query(query);
 
@@ -179,7 +179,7 @@ const SalaryModel = {
       }
 
       const query = `SELECT experience, mapped_job_title, mapped_job_title_1, current_date, salary, mapped_average_sal, avg_experience, combined_skills
-        FROM naukri_extract
+        FROM price_a_job
         WHERE  ${conditions} mapped_job_title = '${salaryDataWithoutExp.job_title}' ${sectorQuery}  AND mapped_average_sal >= 2 `;
 
       const [rows] = await connection.query(query);
@@ -190,7 +190,7 @@ const SalaryModel = {
         return rows;
       } else {
         const query = `SELECT experience, mapped_job_title, mapped_job_title_1, current_date, salary, mapped_average_sal, avg_experience, combined_skills
-        FROM naukri_extract
+        FROM price_a_job
         WHERE mapped_job_title = '${salaryDataWithoutExp.job_title}' ${sectorQuery} AND mapped_average_sal >= 2`;
 
         console.log("🚀 ~ salaryDataWithoutExp: ~ query:", query);

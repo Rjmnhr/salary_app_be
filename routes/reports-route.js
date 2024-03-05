@@ -4,5 +4,6 @@ const router = express.Router();
 
 router.post("/save", ReportsController.saveReports);
 router.post("/get", ReportsController.getReportByID);
+router.post("/update", ReportsController.updateReport);
 
 module.exports = router;
