@@ -48,12 +48,21 @@ const PriceAJobModel = {
 
     try {
       const query = `SELECT
-      p.location , p.experience , p.industry_type as sectors
-      FROM paypulse_titles AS t
-      LEFT JOIN
-      paypulse_profiles AS p ON t.id = p.title_id
+          p.location,
+          p.experience,
+          p.industry_type AS sectors
+      FROM 
+          paypulse_profiles AS p
       WHERE 
-      t.id = '${getValidInputs.title_id}';`;
+          p.title_id = '${getValidInputs.title_id}' AND p.mapped_average_sal > 2;
+  `;
+      // const query = `SELECT
+      // p.location , p.experience , p.industry_type as sectors
+      // FROM paypulse_titles AS t
+      // LEFT JOIN
+      // paypulse_profiles AS p ON t.id = p.title_id
+      // WHERE
+      // t.id = '${getValidInputs.title_id}';`;
 
       const [rows] = await connection.query(query);
 
