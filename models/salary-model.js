@@ -38,6 +38,28 @@ const SalaryModel = {
       connection.release(); // Release the connection back to the pool
     }
   },
+  getValidInputs: async (getValidInputs) => {
+    const connection = await pool.getConnection();
+
+    try {
+      const query = `SELECT
+      p.location , p.experience , p.industry_type as sectors
+      FROM price_a_job_titles AS t
+      LEFT JOIN
+      price_a_job_profiles AS p ON t.id = p.title_id
+      where t.id = ${getValidInputs.title_id}`;
+
+      const [rows] = await connection.query(query);
+
+      return rows;
+    } catch (err) {
+      // Handle errors here
+      console.error(err);
+      throw err;
+    } finally {
+      connection.release(); // Release the connection back to the pool
+    }
+  },
   salaryData: async (salaryData) => {
     const connection = await pool.getConnection();
 
@@ -66,10 +88,10 @@ const SalaryModel = {
         sectorQuery = `AND industry_type = '${salaryData.sector}' `;
       }
 
-      const query = `SELECT experience, mapped_job_title, mapped_job_title_1, current_date, salary, mapped_average_sal, avg_experience, combined_skills
+      const query = `SELECT experience, mapped_job_title, mapped_job_title_1, test, salary, mapped_average_sal, avg_experience, combined_skills , salmax
         FROM price_a_job
         WHERE ${conditions} mapped_job_title = '${salaryData.job_title}' AND location LIKE '%${salaryData.location}%'
-        ${experienceQuery} ${sectorQuery} AND mapped_average_sal > 2`;
+        ${experienceQuery} ${sectorQuery} AND mapped_average_sal > 2 `;
 
       const [rows] = await connection.query(query);
 
@@ -88,7 +110,7 @@ const SalaryModel = {
       } else {
         skillsCache.set("key", false);
 
-        const query = `SELECT experience, mapped_job_title, mapped_job_title_1, current_date, salary, mapped_average_sal, avg_experience, combined_skills
+        const query = `SELECT experience, mapped_job_title, mapped_job_title_1, test, salary, mapped_average_sal, avg_experience, combined_skills, salmax
         FROM price_a_job
         WHERE  mapped_job_title = '${salaryData.job_title}' AND location LIKE '%${salaryData.location}%'
         ${experienceQuery} ${sectorQuery} AND mapped_average_sal > 2 `;

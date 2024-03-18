@@ -1,51 +1,14 @@
-const SalaryModel = require("../models/salary-model");
+const PriceAJobModel = require("../models/paypulse-model");
+const { cities, experienceOptions } = require("../config/constants");
+const {
+  filterCounts,
+  transformCountsToArray,
+} = require("../utils/price-a-job-helper");
 
-const cities = [
-  "Chandigarh",
-  "New Delhi",
-  "Hyderabad",
-  "Ahmedabad",
-  "Surat",
-  "Vadodara",
-  "Gurgaon",
-  "Bangalore",
-  "Bengaluru",
-  "Kochi",
-  "Indore",
-  "Mumbai",
-  "Pune",
-  "Jaipur",
-  "Chennai",
-  "Coimbatore",
-  "Lucknow",
-  "Noida",
-  "Kolkata",
-  "Thane",
-  "Delhi",
-];
-
-const experienceOptions = ["0-2", "2-5", "5-8", "8-11", "11-14", "15+"];
-
-const filterCounts = (counts) => {
-  return Object.fromEntries(
-    Object.entries(counts).filter(([key, value]) => value > 10)
-  );
-};
-
-// Helper function to transform counts object into an array of objects
-const transformCountsToArray = (counts) => {
-  return Object.entries(counts).map(([key, count]) => {
-    const [location, experience, sector] = key
-      .split(",")
-      .map((item) => item.trim());
-    return { location, experience, ...(sector && { sector }), count };
-  });
-};
-
-const SalaryController = {
+const PriceAJobController = {
   getAllTitles: async (req, res) => {
     try {
-      const data = await SalaryModel.getAllTitles(req.body);
+      const data = await PriceAJobModel.getAllTitles(req.body);
 
       res.status(200).json({ status: 200, data: data });
     } catch (err) {
@@ -56,7 +19,7 @@ const SalaryController = {
   },
   getAllSectors: async (req, res) => {
     try {
-      const data = await SalaryModel.getAllSectors(req.body);
+      const data = await PriceAJobModel.getAllSectors(req.body);
 
       res.status(200).json({ status: 200, data: data });
     } catch (err) {
@@ -67,12 +30,12 @@ const SalaryController = {
   },
   getValidInputs: async (req, res) => {
     try {
-      const sectorsResponse = await SalaryModel.getAllSectors(req.body);
-      const sectorsRaw = sectorsResponse.map((s) => s.industry_type);
+      const sectorsResponse = await PriceAJobModel.getAllSectors(req.body);
+      const sectorsRaw = sectorsResponse.map((s) => s.sectors);
 
       const sectors = sectorsRaw.filter((s) => s !== "Nan");
 
-      const profiles = await SalaryModel.getValidInputs(req.body);
+      const profiles = await PriceAJobModel.getValidInputs(req.body);
 
       // Initialize counts object
       const counts = {};
@@ -165,10 +128,32 @@ const SalaryController = {
       res.status(500).json({ message: err });
     }
   },
+  getTopSkills: async (req, res) => {
+    try {
+      const data = await PriceAJobModel.getTopSkills(req.body);
+
+      res.status(200).json({ status: 200, data: data });
+    } catch (err) {
+      console.error(err);
+
+      res.status(500).json({ message: err });
+    }
+  },
+  getRelevantSkills: async (req, res) => {
+    try {
+      const data = await PriceAJobModel.getRelevantSkills(req.body);
+
+      res.status(200).json({ status: 200, data: data });
+    } catch (err) {
+      console.error(err);
+
+      res.status(500).json({ message: err });
+    }
+  },
 
   salaryData: async (req, res) => {
     try {
-      const data = await SalaryModel.salaryData(req.body);
+      const data = await PriceAJobModel.salaryData(req.body);
 
       res.status(200).json({ data: data.rows, bool: data.bool });
     } catch (err) {
@@ -179,7 +164,7 @@ const SalaryController = {
   },
   salaryDataWithoutLoc: async (req, res) => {
     try {
-      const data = await SalaryModel.salaryDataWithoutLoc(req.body);
+      const data = await PriceAJobModel.salaryDataWithoutLoc(req.body);
 
       res.status(200).json(data);
     } catch (err) {
@@ -190,7 +175,7 @@ const SalaryController = {
   },
   salaryDataWithoutExp: async (req, res) => {
     try {
-      const data = await SalaryModel.salaryDataWithoutExp(req.body);
+      const data = await PriceAJobModel.salaryDataWithoutExp(req.body);
 
       res.status(200).json(data);
     } catch (err) {
@@ -201,4 +186,4 @@ const SalaryController = {
   },
 };
 
-module.exports = SalaryController;
+module.exports = PriceAJobController;

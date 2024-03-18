@@ -1,11 +1,15 @@
 const getUserID = require("../utils/getUserID");
-const ReportModel = require("../models/reports-model");
+const PriceAJobActivityModel = require("../models/paypulse-activity-model");
 
-const ReportsController = {
-  saveReports: async (req, res) => {
+const PriceAJobActivityController = {
+  saveUserActivity: async (req, res) => {
     const userID = getUserID(req);
+
     try {
-      const reportSaved = await ReportModel.saveReports(req.body, userID);
+      const reportSaved = await PriceAJobActivityModel.saveUserActivity(
+        req.body,
+        userID
+      );
 
       if (!reportSaved)
         return res
@@ -20,11 +24,11 @@ const ReportsController = {
       res.status(500).json({ message: err });
     }
   },
-  getReportByID: async (req, res) => {
+  getUserActivity: async (req, res) => {
     const userID = getUserID(req);
 
     try {
-      const data = await ReportModel.getReportByID(userID);
+      const data = await PriceAJobActivityModel.getUserActivity(userID);
 
       if (!data)
         return res
@@ -39,7 +43,7 @@ const ReportsController = {
   },
   updateReport: async (req, res) => {
     try {
-      const data = await ReportModel.updateReport(req.body);
+      const data = await PriceAJobActivityModel.updateReport(req.body);
 
       if (!data)
         return res
@@ -56,4 +60,4 @@ const ReportsController = {
   },
 };
 
-module.exports = ReportsController;
+module.exports = PriceAJobActivityController;

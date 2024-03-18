@@ -11,6 +11,7 @@ router.post("/send-otp", (req, res) => {
   const secret = otplib.authenticator.generateSecret();
   const otp = otplib.authenticator.generate(secret);
 
+
   // Store OTP in cache with the email as the key
   otpCache.set(email, otp, 600); // Set OTP to expire in 10 minutes (600 seconds)
 

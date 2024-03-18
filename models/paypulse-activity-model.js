@@ -1,24 +1,26 @@
 const pool = require("../config/mySQL-DB");
 
-const SalaryModel = {
-  saveReports: async (saveReports, id) => {
+const PriceAJobActivityModel = {
+  saveUserActivity: async (saveUserActivity, id) => {
     const connection = await pool.getConnection();
 
     try {
-      const query = `INSERT INTO price_a_job_reports (user_id, job_titles, experience, skills, location, manage, supervise, sector)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+      const query = `INSERT INTO UserActivityPaypulse (report_id, user_id, title, experience, skills, location, manage, supervise, sector ,title_id)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?,?,?)`;
 
       const [rows] = await connection.query(query, [
+        saveUserActivity.report_id,
         id,
-        saveReports.job_titles,
-        saveReports.experience ? saveReports.experience : null,
+        saveUserActivity.title,
+        saveUserActivity.experience ? saveUserActivity.experience : null,
 
-        saveReports.skills,
-        saveReports.location,
-        saveReports.manage,
+        saveUserActivity.skills,
+        saveUserActivity.location,
+        saveUserActivity.manage,
 
-        saveReports.supervise,
-        saveReports.sector,
+        saveUserActivity.supervise,
+        saveUserActivity.sector,
+        saveUserActivity.title_id,
       ]);
 
       return rows;
@@ -30,20 +32,21 @@ const SalaryModel = {
       connection.release(); // Release the connection back to the pool
     }
   },
-  getReportByID: async (id) => {
+  getUserActivity: async (id) => {
     const connection = await pool.getConnection();
 
     try {
       const query = `SELECT  
       report_id,
-      job_titles,
+      title_id,
+      title as title,
       location,
       experience,
       skills,
       manage,
       supervise,
       sector
-      FROM price_a_job_reports WHERE user_id = ${id}`;
+      FROM UserActivityPaypulse WHERE user_id = ${id}`;
 
       const [rows] = await connection.query(query);
 
@@ -57,16 +60,16 @@ const SalaryModel = {
     }
   },
 
-  updateReport: async (updateReport) => {
+  updateUserActivity: async (updateUserActivity) => {
     const connection = await pool.getConnection();
 
     try {
-      const query = `UPDATE price_a_job_reports
-      SET experience = '${updateReport.experience}',
-      skills = '${updateReport.skills}',
-      location = '${updateReport.location}',
-      sector = '${updateReport.sector}'
-      WHERE report_id = '${updateReport.id}' ;`;
+      const query = `UPDATE UserActivityPaypulse
+      SET experience = '${updateUserActivity.experience}',
+      skills = '${updateUserActivity.skills}',
+      location = '${updateUserActivity.location}',
+      sector = '${updateUserActivity.sector}'
+      WHERE report_id = '${updateUserActivity.id}' ;`;
 
       const [rows] = await connection.query(query);
 
@@ -81,4 +84,4 @@ const SalaryModel = {
   },
 };
 
-module.exports = SalaryModel;
+module.exports = PriceAJobActivityModel;

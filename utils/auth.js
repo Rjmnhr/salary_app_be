@@ -2,22 +2,17 @@ const jwt = require("jsonwebtoken");
 
 function authenticateToken(req, res, next) {
   const authHeader = req.headers.token;
-  
+
   if (authHeader) {
     const token = authHeader.split(" ")[1];
 
     jwt.verify(token, process.env.SECRET_KEY, (err, user) => {
-      if (err)
-        return res
-          .status(403)
-          .json({ status: 403, message: "Token is not valid!" });
+      if (err) return res.json({ status: 403, message: "Token is not valid!" });
       req.user = user;
       next();
     });
   } else {
-    return res
-      .status(401)
-      .json({ status: 401, message: "you are not authenticated" });
+    return res.json({ status: 401, message: "you are not authenticated" });
   }
 }
 

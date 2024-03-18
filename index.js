@@ -3,12 +3,11 @@ const dotenv = require("dotenv");
 const Cors = require("cors");
 const bodyParser = require("body-parser");
 const pool = require("./config/mySQL-DB");
-const salaryRoutes = require("./routes/salary-route");
 const skillsRoutes = require("./routes/skills-route");
 const otpAuth = require("./routes/otp-auth");
 const userRoutes = require("./routes/users-route");
 const tokenRoutes = require("./routes/verify-token");
-const reportRoutes = require("./routes/reports-route");
+const payPulseUserActivity = require("./routes/paypulse-activity-routes");
 const checkoutRoutes = require("./routes/checkout");
 const paymentSuccessRoutes = require("./routes/payment_success");
 const enquiryRoutes = require("./routes/enquiry");
@@ -16,6 +15,8 @@ const benchmarkRoutes = require("./routes/benchmark-routes");
 const trackDataRoutes = require("./routes/track-data-route");
 const surveyRoutes = require("./routes/survey-route");
 const KPIRoutes = require("./routes/kpi-routes");
+const generatePDFRoutes = require("./routes/generatePDF");
+const payPulseRoute = require("./routes/paypulse-routes");
 const authenticateToken = require("./utils/auth");
 
 //App config
@@ -52,9 +53,8 @@ pool
     console.error("Error connecting to MySQL database:", err.message);
   });
 
-app.use("/api/salary", authenticateToken, salaryRoutes);
-app.use("/api/skills", authenticateToken, skillsRoutes);
-app.use("/api/report", authenticateToken, reportRoutes);
+app.use("/api/pay-pulse", authenticateToken, payPulseRoute);
+app.use("/api/pay-pulse", authenticateToken, payPulseUserActivity);
 
 app.use("/api/user", userRoutes);
 app.use("/api/otp", otpAuth);
@@ -64,7 +64,8 @@ app.use("/api/benchmark", benchmarkRoutes);
 app.use("/api/kpi", KPIRoutes);
 app.use(checkoutRoutes);
 app.use(paymentSuccessRoutes);
-app.use("/api/track-data", trackDataRoutes);
+// app.use("/api/track-data", trackDataRoutes);
 app.use("/api/survey", surveyRoutes);
+app.use("/api", generatePDFRoutes);
 
 app.listen(port, () => console.log(`server is up on ${port}`));
