@@ -4,6 +4,6 @@ const router = express.Router();
 
 router.post("/save-activity", PriceAJobActivityController.saveUserActivity);
 router.post("/get-activity", PriceAJobActivityController.getUserActivity);
-router.post("/update-activity", PriceAJobActivityController.updateReport);
+router.post("/update-activity", PriceAJobActivityController.updateUserActivity);
 
 module.exports = router;

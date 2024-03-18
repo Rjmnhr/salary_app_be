@@ -117,6 +117,7 @@ const PriceAJobModel = {
 
     try {
       const userInputSkills = salaryData.skills;
+
       let conditions = "";
       if (userInputSkills && userInputSkills.length > 0) {
         conditions = userInputSkills
@@ -134,7 +135,7 @@ const PriceAJobModel = {
       }
 
       let sectorQuery = "";
-      if (salaryData.sector) {
+      if (salaryData.sector && salaryData.sector !== "null") {
         sectorQuery = `AND p.industry_type = '${salaryData.sector}' `;
       }
 
@@ -206,7 +207,10 @@ const PriceAJobModel = {
       }
 
       let sectorQuery = "";
-      if (salaryDataWithoutLoc.sector) {
+      if (
+        salaryDataWithoutLoc.sector &&
+        salaryDataWithoutLoc.sector !== "null"
+      ) {
         sectorQuery = `AND p.industry_type = '${salaryDataWithoutLoc.sector}' `;
       }
       const query = `SELECT
@@ -261,7 +265,10 @@ const PriceAJobModel = {
       }
 
       let sectorQuery = "";
-      if (salaryDataWithoutExp.sector) {
+      if (
+        salaryDataWithoutExp.sector &&
+        salaryDataWithoutExp.sector !== "null"
+      ) {
         sectorQuery = `AND p.industry_type = '${salaryDataWithoutExp.sector}' `;
       }
 

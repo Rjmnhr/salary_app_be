@@ -41,9 +41,9 @@ const PriceAJobActivityController = {
       res.status(500).json({ message: err });
     }
   },
-  updateReport: async (req, res) => {
+  updateUserActivity: async (req, res) => {
     try {
-      const data = await PriceAJobActivityModel.updateReport(req.body);
+      const data = await PriceAJobActivityModel.updateUserActivity(req.body);
 
       if (!data)
         return res
