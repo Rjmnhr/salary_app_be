@@ -26,7 +26,7 @@ const PriceAJobModel = {
 
     try {
       const query = `SELECT
-      distinct p.industry_type
+      distinct p.industry_type as sectors
       FROM paypulse_titles AS t
       LEFT JOIN
       paypulse_profiles AS p ON t.id = p.title_id

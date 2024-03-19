@@ -35,7 +35,7 @@ const PriceAJobActivityController = {
           .status(200)
           .json({ status: 400, message: "Fetching reports failed" });
 
-      return res.status(200).json(data);
+      return res.status(200).json({ status: 200, data: data });
     } catch (err) {
       console.error(err);
       res.status(500).json({ message: err });

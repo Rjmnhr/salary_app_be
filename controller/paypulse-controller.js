@@ -29,6 +29,7 @@ const PriceAJobController = {
     }
   },
   getValidInputs: async (req, res) => {
+    const { threshold } = req.body;
     try {
       const sectorsResponse = await PriceAJobModel.getAllSectors(req.body);
       const sectorsRaw = sectorsResponse.map((s) => s.sectors);
@@ -93,8 +94,8 @@ const PriceAJobController = {
           // Check if industry_type includes any sector
           sectors.forEach((sector) => {
             if (
-              profile.industry_type &&
-              profile.industry_type.toLowerCase().includes(sector.toLowerCase())
+              profile.sectors &&
+              profile.sectors.toLowerCase().includes(sector.toLowerCase())
             ) {
               // Construct the key
               const key = `${city}, ${experience}, ${sector}`;
@@ -107,8 +108,11 @@ const PriceAJobController = {
       });
 
       // Filter out counts with value greater than threshold
-      const filteredCounts = filterCounts(counts);
-      const filteredCountsWithSectors = filterCounts(countsWithSectors);
+      const filteredCounts = filterCounts(counts, threshold);
+      const filteredCountsWithSectors = filterCounts(
+        countsWithSectors,
+        threshold
+      );
 
       // Transform the filtered counts into arrays of objects
       const countArray = transformCountsToArray(filteredCounts);

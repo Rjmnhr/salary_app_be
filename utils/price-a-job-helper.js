@@ -1,6 +1,6 @@
-const filterCounts = (counts) => {
+const filterCounts = (counts, threshold) => {
   return Object.fromEntries(
-    Object.entries(counts).filter(([key, value]) => value > 10)
+    Object.entries(counts).filter(([key, value]) => value > threshold)
   );
 };
 

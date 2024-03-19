@@ -55,7 +55,6 @@ pool
 
 app.use("/api/pay-pulse", authenticateToken, payPulseRoute);
 app.use("/api/pay-pulse", authenticateToken, payPulseUserActivity);
-
 app.use("/api/user", userRoutes);
 app.use("/api/otp", otpAuth);
 app.use("/api/token", tokenRoutes);
