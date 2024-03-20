@@ -3,7 +3,6 @@ const dotenv = require("dotenv");
 const Cors = require("cors");
 const bodyParser = require("body-parser");
 const pool = require("./config/mySQL-DB");
-const skillsRoutes = require("./routes/skills-route");
 const otpAuth = require("./routes/otp-auth");
 const userRoutes = require("./routes/users-route");
 const tokenRoutes = require("./routes/verify-token");
@@ -56,6 +55,7 @@ pool
 app.use("/api/pay-pulse", authenticateToken, payPulseRoute);
 app.use("/api/pay-pulse", authenticateToken, payPulseUserActivity);
 app.use("/api/user", userRoutes);
+app.use("/api/track-data", trackDataRoutes);
 app.use("/api/otp", otpAuth);
 app.use("/api/token", tokenRoutes);
 app.use("/api/enquiry", enquiryRoutes);

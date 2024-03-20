@@ -11,7 +11,6 @@ router.post("/send-otp", (req, res) => {
   const secret = otplib.authenticator.generateSecret();
   const otp = otplib.authenticator.generate(secret);
 
-
   // Store OTP in cache with the email as the key
   otpCache.set(email, otp, 600); // Set OTP to expire in 10 minutes (600 seconds)
 
@@ -26,7 +25,7 @@ router.post("/send-otp", (req, res) => {
 
   // Set up email data
   const mailOptions = {
-    from: "team@equipaypartners.com",
+    from: "Equipay Partners <team@equipaypartners.com>",
     to: email,
     subject: "Your One-Time Password (OTP) for Equipay Partners",
     text: `Thank you for using Equipay Partners. To complete your login or verification process, please use the following one-time password (OTP):

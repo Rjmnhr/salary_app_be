@@ -9,7 +9,7 @@ router.post("/signup", UsersController.createUser);
 router.post("/login", UsersController.loginUser);
 router.post("/create-google-user", UsersController.createGoogleUser);
 router.post("/reset-password", UsersController.resetPassword);
-router.post("/change-email", UsersController.changeEmail);
+router.post("/change-email", authenticateToken, UsersController.changeEmail);
 router.post("/check", UsersController.checkForExistingUser);
 
 module.exports = router;
