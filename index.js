@@ -16,6 +16,7 @@ const surveyRoutes = require("./routes/survey-route");
 const KPIRoutes = require("./routes/kpi-routes");
 const generatePDFRoutes = require("./routes/generatePDF");
 const payPulseRoute = require("./routes/paypulse-routes");
+const demoRoutes = require("./routes/demo-registeration-route");
 const authenticateToken = require("./utils/auth");
 
 //App config
@@ -56,6 +57,7 @@ app.use("/api/pay-pulse", authenticateToken, payPulseRoute);
 app.use("/api/pay-pulse", authenticateToken, payPulseUserActivity);
 app.use("/api/user", userRoutes);
 app.use("/api/track-data", trackDataRoutes);
+app.use("/api/demo", demoRoutes);
 app.use("/api/otp", otpAuth);
 app.use("/api/token", tokenRoutes);
 app.use("/api/enquiry", enquiryRoutes);
