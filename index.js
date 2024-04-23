@@ -18,7 +18,7 @@ const generatePDFRoutes = require("./routes/generatePDF");
 const payPulseRoute = require("./routes/paypulse-routes");
 const demoRoutes = require("./routes/demo-registeration-route");
 const authenticateToken = require("./utils/auth");
-
+const jwt = require("jsonwebtoken");
 //App config
 const app = express();
 const port = process.env.PORT || 8003;
@@ -68,5 +68,14 @@ app.use(paymentSuccessRoutes);
 // app.use("/api/track-data", trackDataRoutes);
 app.use("/api/survey", surveyRoutes);
 app.use("/api", generatePDFRoutes);
+
+// function generateToken() {
+//   const secretKey = process.env.SECRET_KEY; // Replace 'your_secret_key' with your actual secret key
+//   const token = jwt.sign({}, secretKey);
+//   return token;
+// }
+
+// const token = generateToken();
+// console.log("🚀 ~ token:", token);
 
 app.listen(port, () => console.log(`server is up on ${port}`));

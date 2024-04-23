@@ -14,5 +14,6 @@ router.post("/relevant-skills", PriceAJobController.getRelevantSkills);
 router.post("/salary-data", PriceAJobController.salaryData);
 router.post("/salary-data-no-loc", PriceAJobController.salaryDataWithoutLoc);
 router.post("/salary-data-no-exp", PriceAJobController.salaryDataWithoutExp);
+router.post("/skillIQ/median-salary", PriceAJobController.skillIQMedianSalary);
 
 module.exports = router;

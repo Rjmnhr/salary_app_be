@@ -32,6 +32,35 @@ const PriceAJobActivityModel = {
       connection.release(); // Release the connection back to the pool
     }
   },
+  saveUserActivityDemo: async (saveUserActivityDemo, id) => {
+    const connection = await pool.getConnection();
+
+    try {
+      const query = `INSERT INTO UserActivityPaypulseDemo (report_id, user_id, title, experience, skills, location, sector)
+                     VALUES (?, ?, ?, ?, ?, ?, ?)`;
+
+      const [rows] = await connection.query(query, [
+        saveUserActivityDemo.report_id,
+        id,
+        saveUserActivityDemo.title,
+        saveUserActivityDemo.experience
+          ? saveUserActivityDemo.experience
+          : null,
+        saveUserActivityDemo.skills,
+        saveUserActivityDemo.location,
+        saveUserActivityDemo.sector,
+      ]);
+
+      return rows;
+    } catch (err) {
+      // Handle errors here
+      console.error(err);
+      throw err;
+    } finally {
+      connection.release(); // Release the connection back to the pool
+    }
+  },
+
   getUserActivity: async (id) => {
     const connection = await pool.getConnection();
 
@@ -47,6 +76,32 @@ const PriceAJobActivityModel = {
       supervise,
       sector
       FROM UserActivityPaypulse WHERE user_id = ${id}`;
+
+      const [rows] = await connection.query(query);
+
+      return rows;
+    } catch (err) {
+      // Handle errors here
+      console.error(err);
+      throw err;
+    } finally {
+      connection.release(); // Release the connection back to the pool
+    }
+  },
+  getUserActivityDemo: async (id) => {
+    const connection = await pool.getConnection();
+
+    try {
+      const query = `SELECT  
+      report_id,
+      title as title,
+      location,
+      experience,
+      skills,
+      manage,
+      supervise,
+      sector
+      FROM UserActivityPaypulseDemo WHERE user_id = ${id}`;
 
       const [rows] = await connection.query(query);
 

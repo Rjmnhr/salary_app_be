@@ -3,7 +3,15 @@ const PriceAJobActivityController = require("../controller/paypulse-activity-con
 const router = express.Router();
 
 router.post("/save-activity", PriceAJobActivityController.saveUserActivity);
-router.post("/get-activity", PriceAJobActivityController.getUserActivity);
+router.post(
+  "/save-activity-demo",
+  PriceAJobActivityController.saveUserActivityDemo
+);
+router.get("/get-activity", PriceAJobActivityController.getUserActivity);
+router.get(
+  "/get-activity-demo",
+  PriceAJobActivityController.getUserActivityDemo
+);
 router.post("/update-activity", PriceAJobActivityController.updateUserActivity);
 
 module.exports = router;

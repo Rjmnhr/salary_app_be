@@ -1,4 +1,5 @@
 const nodemailer = require("nodemailer");
+const DemoModel = require("../models/demo-registration-model");
 
 const notifyAdmin = (data) => {
   const {
@@ -25,7 +26,7 @@ const notifyAdmin = (data) => {
   // Set up email data
   const mailOptions = {
     from: "Equipay Partners <team@equipaypartners.com>",
-    to: "renjithcm.renju@gmail.com , indradeep.mazumdar@gmail.com",
+    to: "renjithcm.renju@gmail.com , indradeep.mazumdar@gmail.com, team@equipaypartners.com",
     subject: `New Registration for Pay Pulse Live Product Demo`,
     text: `Hello Admin,
     
@@ -112,6 +113,7 @@ Equipay Partners
 const DemoController = {
   demoRegister: async (req, res) => {
     try {
+      const register = await DemoModel.saveRegistration(req.body);
       notifyUser(req.body);
       notifyAdmin(req.body);
       res

@@ -316,6 +316,41 @@ const PriceAJobModel = {
       connection.release(); // Release the connection back to the pool
     }
   },
+  skillIQMedianSalary: async (skillIQMedianSalary) => {
+    const connection = await pool.getConnection();
+
+    try {
+      const query = `SELECT
+      AVG(mapped_average_sal) AS median_salary
+  FROM
+      (
+          SELECT
+              mapped_average_sal,
+              ROW_NUMBER() OVER (ORDER BY mapped_average_sal) AS row_num,
+              COUNT(*) OVER () AS total_rows
+          FROM
+              paypulse_profiles
+          WHERE
+              mapped_job_title like CONCAT('%', '${skillIQMedianSalary.title}', '%') 
+              AND experience = '${skillIQMedianSalary.experience}' 
+              AND (location LIKE '%bangalore%' OR location LIKE '%bengaluru%') 
+              AND extracted_on >= DATE_SUB(CURRENT_DATE(), INTERVAL 30 DAY)
+              AND extracted_on < CURRENT_DATE()
+      ) AS subquery
+  WHERE
+      row_num BETWEEN total_rows / 2 AND total_rows / 2 + 1;`;
+
+      const [rows] = await connection.query(query);
+
+      return { rows, query };
+    } catch (err) {
+      // Handle errors here
+      console.error(err);
+      throw err;
+    } finally {
+      connection.release(); // Release the connection back to the pool
+    }
+  },
 };
 
 module.exports = PriceAJobModel;

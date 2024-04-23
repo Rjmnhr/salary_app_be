@@ -24,11 +24,50 @@ const PriceAJobActivityController = {
       res.status(500).json({ message: err });
     }
   },
+  saveUserActivityDemo: async (req, res) => {
+    const userID = getUserID(req);
+
+    try {
+      const reportSaved = await PriceAJobActivityModel.saveUserActivityDemo(
+        req.body,
+        userID
+      );
+
+      if (!reportSaved)
+        return res
+          .status(200)
+          .json({ status: 200, message: "creating report failed" });
+
+      return res
+        .status(200)
+        .json({ status: 200, message: "Report saved successfully" });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: err });
+    }
+  },
   getUserActivity: async (req, res) => {
     const userID = getUserID(req);
 
     try {
       const data = await PriceAJobActivityModel.getUserActivity(userID);
+
+      if (!data)
+        return res
+          .status(200)
+          .json({ status: 400, message: "Fetching reports failed" });
+
+      return res.status(200).json({ status: 200, data: data });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: err });
+    }
+  },
+  getUserActivityDemo: async (req, res) => {
+    const userID = getUserID(req);
+
+    try {
+      const data = await PriceAJobActivityModel.getUserActivityDemo(userID);
 
       if (!data)
         return res
