@@ -351,6 +351,23 @@ const PriceAJobModel = {
       connection.release(); // Release the connection back to the pool
     }
   },
+  chart1: async (chart1) => {
+    const connection = await pool.getConnection();
+
+    try {
+      const query = `SELECT * FROM product LIMIT 5`;
+
+      const [rows] = await connection.query(query);
+
+      return { rows, query };
+    } catch (err) {
+      // Handle errors here
+      console.error(err);
+      throw err;
+    } finally {
+      connection.release(); // Release the connection back to the pool
+    }
+  },
 };
 
 module.exports = PriceAJobModel;

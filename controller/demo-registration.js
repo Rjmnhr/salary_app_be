@@ -26,7 +26,7 @@ const notifyAdmin = (data) => {
   // Set up email data
   const mailOptions = {
     from: "Equipay Partners <team@equipaypartners.com>",
-    to: "renjithcm.renju@gmail.com , indradeep.mazumdar@gmail.com, team@equipaypartners.com",
+    to: "renjithcm.renju@gmail.com, pannersmail@gmail.com, team@equipaypartners.com",
     subject: `New Registration for Pay Pulse Live Product Demo`,
     text: `Hello Admin,
     

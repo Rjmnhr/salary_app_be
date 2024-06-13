@@ -194,7 +194,22 @@ const PriceAJobController = {
 
       res.status(200).json({
         status: 200,
-        median_salary: data?.rows[0]?.median_salary,
+        data: { median_salary: data?.rows[0]?.median_salary },
+        sql: data.query,
+      });
+    } catch (err) {
+      console.error(err);
+
+      res.status(500).json({ message: err });
+    }
+  },
+  chart1: async (req, res) => {
+    try {
+      const data = await PriceAJobModel.chart1(req.body);
+
+      res.status(200).json({
+        status: 200,
+        data: data,
         sql: data.query,
       });
     } catch (err) {

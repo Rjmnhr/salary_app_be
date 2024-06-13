@@ -16,7 +16,7 @@ router.post("/send-enquiry", (req, res) => {
   // Set up email data
   const mailOptions = {
     from: "Equipay Partners <team@equipaypartners.com>",
-    to: "indradeep.mazumdar@gmail.com,renjithcm.renju@gmail.com",
+    to: "renjithcm.renju@gmail.com, pannersmail@gmail.com, team@equipaypartners.com",
     subject: `Equipay Partners enquiry from ${name}  `,
     text: `Dear Equipay Partners,
     

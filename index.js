@@ -53,7 +53,7 @@ pool
     console.error("Error connecting to MySQL database:", err.message);
   });
 
-app.use("/api/pay-pulse", authenticateToken, payPulseRoute);
+app.use("/api/paypulse", authenticateToken, payPulseRoute);
 app.use("/api/pay-pulse", authenticateToken, payPulseUserActivity);
 app.use("/api/user", userRoutes);
 app.use("/api/track-data", trackDataRoutes);
